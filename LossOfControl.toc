@@ -1,0 +1,25 @@
+## Interface: 80000
+## Version: @project-version@
+
+## Title: Loss Of Control
+## Notes: Loss Of Control announces when you are suffering from a *Loss Of Control* event, e.g., stunned, silenced, spell-locked, etc., that prevents you from performing your role.
+
+## Author: Johnny C. Lam
+
+## OptionalDeps: Ace3
+## SavedVariables: LossOfControlDB
+
+#@no-lib-strip@
+libs\libs.xml
+#@end-no-lib-strip@
+
+Localization.lua
+Core.lua
+
+Broadcast.lua
+Group.lua
+Messages.lua
+Options.lua
+Role.lua
+Version.lua
+Zone.lua
