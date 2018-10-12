@@ -1,8 +1,8 @@
 ## Overview
 
-[Loss Of Control][project] announces when you are suffering from a *Loss Of Control* event, e.g., stunned, silenced, spell-locked, etc., that prevents you from performing your role. When affected by several *Loss of Control* events at the same time, only the event that lasts the longest is announced.
+[Loss Of Control][project] announces when you are suffering from a *Loss Of Control* event, e.g., stunned, silenced, spell-locked, etc., that prevents you from performing your role. When affected by several *Loss Of Control* events at the same time, only the event that lasts the longest is announced.
 
-**Loss of Control** will also show alerts for events from other members of the group that are also using the **Loss Of Control** addon.
+**Loss Of Control** will also show alerts for events from other members of the group that are also using the **Loss Of Control** addon.
 
 ## Features:
 
