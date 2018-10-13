@@ -162,8 +162,14 @@ do
 	end
 
 	function addon:CreateGainMessage(msgType, guid, role)
-		local name = self:GetDecoratedName(msgType, guid, role)
-		local msg = format(L["%s is back!"], name)
+		local fmt, msg
+		if msgType == "emote" then
+			msg = L["is back!"]
+		else
+			local name = self:GetDecoratedName(msgType, guid, role)
+			fmt = L["%s is back!"]
+			msg = format(fmt, name)
+		end
 		return msg
 	end
 
