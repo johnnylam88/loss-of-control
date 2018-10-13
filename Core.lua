@@ -244,9 +244,11 @@ do
 		local role = self:GetRole()
 		if self.db.profile.announce.regain then
 			local channel, msgType = self:GetOutputChannel()
-			local chatMessage = self:CreateGainMessage(msgType, guid, role)
+			if self.db.profile.announce.enable then
+				local chatMessage = self:CreateGainMessage(msgType, guid, role)
+				self:SendChatMessage(chatMessage, channel)
+			end
 			local localMessage = self:CreateGainMessage("local", guid, role)
-			self:SendChatMessage(chatMessage, channel)
 			self:SendLocalMessage(localMessage)
 		end
 		-- Always broadcast and allow the receiver to decide whether to use the information.
@@ -263,9 +265,11 @@ do
 			local spellID = self:GetSpellID()
 			local effect = self:GetEffect()
 			local channel, msgType = self:GetOutputChannel()
-			local chatMessage = self:CreateLossMessage(msgType, guid, role, spellID, effect, remainingRounded)
+			if self.db.profile.announce.enable then
+				local chatMessage = self:CreateLossMessage(msgType, guid, role, spellID, effect, remainingRounded)
+				self:SendChatMessage(chatMessage, channel)
+			end
 			local localMessage = self:CreateLossMessage("local", guid, role, spellID, effect, remainingRounded)
-			self:SendChatMessage(chatMessage, channel)
 			self:SendLocalMessage(localMessage)
 			self:BroadcastLoss(guid, role, spellID, effect, remainingRounded) -- from Broadcast.lua
 		end

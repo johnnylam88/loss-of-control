@@ -16,6 +16,7 @@ local defaultDB = {
 	profile = {
 		-- Make announcements only in dungeons.
 		announce = {
+			enable = true, -- Enable announcements.
 			zone = {
 				dungeon = true,
 				lfg_dungeon = true,
@@ -52,6 +53,7 @@ local defaultDB = {
 			},
 		},
 		alert = {
+			enable = true, -- Enable alerts from other group members.
 			chat = true, -- Alert in chat window.
 			raidWarning = true, -- Alert as raid warning message.
 			regain = false, -- Ignore alerts for regaining control.
@@ -131,6 +133,9 @@ local options = {
 			desc = L["Manage how announcements are made."],
 			type = "group",
 			order = 10,
+			disabled = function()
+				return not addon.db.profile.announce.enable
+			end,
 			get = function(info)
 				return addon.db.profile.announce[info[#info]]
 			end,
@@ -143,6 +148,14 @@ local options = {
 					name = L["Set conditions for making announcements based on zone, role, and event duration."],
 					type = "description",
 					order = 1,
+				},
+				enable = {
+					name = L["Enable"],
+					desc = L["Enable announcements for Loss Of Control events."],
+					type = "toggle",
+					order = 5,
+					width = "full",
+					disabled = false,
 				},
 				zones = {
 					name = L["Enabled Zones"],
@@ -207,10 +220,10 @@ local options = {
 					type = "select",
 					order = 20,
 					values = {
-						say = L["Say"],
-						yell = L["Yell"],
 						emote = L["Emote"],
 						group = L["Group"],
+						say = L["Say"],
+						yell = L["Yell"],
 					},
 				},
 				threshold = {
@@ -351,6 +364,9 @@ local options = {
 			desc = L["Manage alerts when listening for Loss Of Control events from other members of the group."],
 			type = "group",
 			order = 30,
+			disabled = function()
+				return not addon.db.profile.alert.enable
+			end,
 			get = function(info)
 				return addon.db.profile.alert[info[#info]]
 			end,
@@ -362,6 +378,14 @@ local options = {
 					name = L["Manage alerts when listening for Loss Of Control events from other members of the group."],
 					type = "description",
 					order = 1,
+				},
+				enable = {
+					name = L["Enable"],
+					desc = L["Enable alerts for Loss Of Control events from group memebers."],
+					type = "toggle",
+					order = 5,
+					width = "full",
+					disabled = false,
 				},
 				chat = {
 					name = L["Show alerts in local chat window."],

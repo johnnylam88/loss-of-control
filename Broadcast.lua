@@ -14,7 +14,8 @@ addon:RegisterCommDispatch("LOC_BL", "OnBroadcastLossReceived")
 local playerGUID = UnitGUID("player")
 
 function addon:OnBroadcastGainReceived(prefix, message, channel, sender)
-	if sender ~= self:GetNameByGUID(playerGUID) and self.db.profile.alert.regain then
+	if self.db.profile.alert.enable and self.db.profile.alert.regain
+			and sender ~= self:GetNameByGUID(playerGUID) then
 		local ok, guid, role = self:Deserialize(message)
 		if ok then
 			local msg = self:CreateGainMessage("local", guid, role)
@@ -28,7 +29,7 @@ function addon:OnBroadcastGainReceived(prefix, message, channel, sender)
 end
 
 function addon:OnBroadcastLossReceived(prefix, message, channel, sender)
-	if sender ~= self:GetNameByGUID(playerGUID) then
+	if self.db.profile.alert.enable and sender ~= self:GetNameByGUID(playerGUID) then
 		local ok, guid, role, spellID, effect, remaining = self:Deserialize(message)
 		if ok then
 			local msg = self:CreateLossMessage("local", guid, role, spellID, effect, remaining)
