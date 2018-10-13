@@ -26,6 +26,7 @@ local C_LossOfControl_GetEventInfo = C_LossOfControl.GetEventInfo
 local C_LossOfControl_GetNumEvents = C_LossOfControl.GetNumEvents
 local GetAddOnMetadata = GetAddOnMetadata
 local InterfaceOptionsFrame_OpenToCategory = InterfaceOptionsFrame_OpenToCategory
+local IsInGroup = IsInGroup
 local LibStub = LibStub
 local UnitGUID = UnitGUID
 
@@ -52,8 +53,7 @@ function addon:Debug(str, ...)
 
 	local name = self.moduleName or self.name or ADDON_NAME
 	local frame = _G[addon.db.global.debugFrame]
-	local message = format("\124cff00d1ff%s\124r: %s", name, str)
-	frame:AddMessage(message)
+	self:Print(frame, str)
 end
 
 ---------------------------------------------------------------------
@@ -244,14 +244,25 @@ do
 		return floor(x * factor + 0.5) / factor
 	end
 
+	function addon:IsAnnounceEnabled()
+		local role = self:GetRole()
+		local zone = self:GetZone()
+		return (self.db.profile.announce.enable
+			and self.db.profile.announce[role].enable
+			and self.db.profile.announce.zone[zone]
+			and (IsInGroup() or self.db.profile.announce.solo))
+	end
+
 	function addon:PlayerControlGained()
 		self:Debug("PlayerControlGained")
 		local role = self:GetRole()
 		if self.db.profile.announce.regain then
-			local channel, msgType = self:GetOutputChannel()
-			if self.db.profile.announce.enable then
-				local chatMessage = self:CreateGainMessage(msgType, guid, role)
-				self:SendChatMessage(chatMessage, channel)
+			if self:IsAnnounceEnabled() then
+				local channel, msgType = self:GetOutputChannel()
+				if channel and msgType then
+					local chatMessage = self:CreateGainMessage(msgType, guid, role)
+					self:SendChatMessage(chatMessage, channel)
+				end
 			end
 			local localMessage = self:CreateGainMessage("local", guid, role)
 			self:SendLocalMessage(localMessage)
@@ -269,10 +280,12 @@ do
 			local role = self:GetRole()
 			local spellID = self:GetSpellID()
 			local effect = self:GetEffect()
-			local channel, msgType = self:GetOutputChannel()
-			if self.db.profile.announce.enable then
-				local chatMessage = self:CreateLossMessage(msgType, guid, role, spellID, effect, remainingRounded)
-				self:SendChatMessage(chatMessage, channel)
+			if self:IsAnnounceEnabled() then
+				local channel, msgType = self:GetOutputChannel()
+				if channel and msgType then
+					local chatMessage = self:CreateLossMessage(msgType, guid, role, spellID, effect, remainingRounded)
+					self:SendChatMessage(chatMessage, channel)
+				end
 			end
 			local localMessage = self:CreateLossMessage("local", guid, role, spellID, effect, remainingRounded)
 			self:SendLocalMessage(localMessage)

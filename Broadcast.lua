@@ -19,8 +19,12 @@ function addon:OnBroadcastGainReceived(prefix, message, channel, sender)
 		local ok, guid, role = self:Deserialize(message)
 		if ok then
 			local msg = self:CreateGainMessage("local", guid, role)
-			self:SendEmphasizedMessage(msg)
-			self:SendLocalMessage(msg)
+			if self.db.profile.alert.raidWarning then
+				self:SendEmphasizedMessage(msg)
+			end
+			if self.db.profile.alert.chat then
+				self:SendLocalMessage(msg)
+			end
 		else
 			-- If not ok, then guid contains the error message from :Deserialize().
 			self:Debug("OnBroadcastgainReceived", guid, prefix, message, channel, sender)
@@ -33,8 +37,12 @@ function addon:OnBroadcastLossReceived(prefix, message, channel, sender)
 		local ok, guid, role, spellID, effect, remaining = self:Deserialize(message)
 		if ok then
 			local msg = self:CreateLossMessage("local", guid, role, spellID, effect, remaining)
-			self:SendEmphasizedMessage(msg)
-			self:SendLocalMessage(msg)
+			if self.db.profile.alert.raidWarning then
+				self:SendEmphasizedMessage(msg)
+			end
+			if self.db.profile.alert.chat then
+				self:SendLocalMessage(msg)
+			end
 		else
 			-- If not ok, then guid contains the error message from :Deserialize().
 			self:Debug("OnBroadcastLossReceived", guid, prefix, message, channel, sender)

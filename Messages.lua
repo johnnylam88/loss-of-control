@@ -69,39 +69,28 @@ do
 
 	function addon:GetOutputChannel()
 		local output = self.db.profile.announce.output
-		local zone = self:GetZone()
-		local role = self:GetRole()
 		local channel, msgType
-		if self.db.profile.announce[role].enable and self.db.profile.announce.zone[zone] then
-			if output == "group" then
-				channel = self:GetGroupChannelByZone(zone) or "SAY"
-			else
-				channel = channelByOutput[output]
-			end
-			msgType = msgTypeByOutput[output]
+		if output == "group" then
+			local zone = self:GetZone()
+			channel = self:GetGroupChannelByZone(zone) or "SAY"
+		else
+			channel = channelByOutput[output]
 		end
+		msgType = msgTypeByOutput[output]
 		return channel, msgType
 	end
 end
 
 function addon:SendChatMessage(message, channel)
-	if IsInGroup() or self.db.profile.announce.solo then
-		SendChatMessage(message, channel)
-	end
+	SendChatMessage(message, channel)
 end
 
 function addon:SendEmphasizedMessage(message)
-	if self.db.profile.alert.raidWarning then
-		RaidNotice_AddMessage(RaidWarningFrame, message, ChatTypeInfo["SAY"])
-	end
+	RaidNotice_AddMessage(RaidWarningFrame, message, ChatTypeInfo["SAY"])
 end
 
 function addon:SendLocalMessage(message)
-	if self.db.profile.alert.chat then
-		local info = ChatTypeInfo["SAY"]
-		local msg = format("\124cff00d1ff%s\124r: %s", self.name, message)
-		DEFAULT_CHAT_FRAME:AddMessage(msg, info.r, info.g, info.b, info.id)
-	end
+	self:Print(message)
 end
 
 ---------------------------------------------------------------------
