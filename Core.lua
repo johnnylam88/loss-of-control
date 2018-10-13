@@ -136,6 +136,11 @@ function addon:ChatCommand(input)
 			else
 				self:Print(version)
 			end
+		elseif input == "debug" then
+			-- Toggle debug option.
+			local value = not self.db.global.debug
+			self.db.global.debug = value
+			self:Print(value and L["Debugging is on."] or L["Debugging is off."])
 		elseif input == "ping" then
 			self:VersionCheck() -- from Version.lua
 		end
