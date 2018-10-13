@@ -9,7 +9,6 @@ local ipairs = ipairs
 local pairs = pairs
 local tinsert = table.insert
 local tostring = tostring
-local IsInGroup = IsInGroup
 local IsInRaid = IsInRaid
 local UnitClass = UnitClass
 local UnitExists = UnitExists
@@ -17,24 +16,6 @@ local UnitGUID = UnitGUID
 local UnitName = UnitName
 local MAX_PARTY_MEMBERS = MAX_PARTY_MEMBERS -- Interface/FrameXML/PartyMemberFrame.lua
 local MAX_RAID_MEMBERS = MAX_RAID_MEMBERS -- Interface/FrameXML/RaidFrame.lua
-
----------------------------------------------------------------------
--- Set whether the player is currently in a group.
-
-local grouped -- true if the player is in a group, or nil otherwise.
-
-function addon:IsInGroup()
-	return grouped
-end
-
-function addon:UpdateInGroup()
-	local inGroup = IsInGroup()
-	if grouped ~= inGroup then
-		self:Debug("UpdateInGroup", tostring(grouped), tostring(inGroup))
-		grouped = inGroup
-		self:UpdateLossOfControl()
-	end
-end
 
 ---------------------------------------------------------------------
 -- Update the mappings from GUID <==> unit <==> name <==> class.
@@ -141,6 +122,5 @@ do
 			self:Debug("UpdateGroup")
 			updated = nil
 		end
-		self:UpdateInGroup()
 	end
 end

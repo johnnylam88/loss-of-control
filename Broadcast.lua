@@ -43,9 +43,9 @@ end
 
 function addon:BroadcastGain(guid, role)
 	local zone = self:GetZone()
-	if zone ~= "world" then
-		local prefix = "LOC_BG"
-		local channel = self:GetChannelByZone(zone) -- find the channel for group addon messages
+	local prefix = "LOC_BG"
+	local channel = self:GetGroupChannelByZone(zone)
+	if channel then
 		local message = self:Serialize(guid, role)
 		self:Debug("SendCommMessage", prefix, guid, role, channel)
 		self:SendCommMessage(prefix, message, channel)
@@ -54,9 +54,9 @@ end
 
 function addon:BroadcastLoss(guid, role, spellID, effect, remaining)
 	local zone = self:GetZone()
-	if zone ~= "world" then
-		local prefix = "LOC_BL"
-		local channel = self:GetChannelByZone(zone) -- find the channel for group addon messages
+	local prefix = "LOC_BL"
+	local channel = self:GetGroupChannelByZone(zone)
+	if channel then
 		local message = self:Serialize(guid, role, spellID, effect, remaining)
 		self:Debug("SendCommMessage", prefix, guid, role, spellID, effect, remaining, channel)
 		self:SendCommMessage(prefix, message, channel)

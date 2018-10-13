@@ -39,9 +39,9 @@ function addon:VersionCheck()
 	if not timer then
 		wipe(versions)
 		local zone = self:GetZone()
-		if zone ~= "world" and self:IsInGroup() then
-			local prefix = "LOC_V"
-			local channel = self:GetChannelByZone(zone)
+		local prefix = "LOC_V"
+		local channel = self:GetGroupChannelByZone(zone)
+		if channel then
 			self:Debug("SendCommMessage", prefix, addonVersion, channel)
 			self:SendCommMessage(prefix, addonVersion, channel)
 		else

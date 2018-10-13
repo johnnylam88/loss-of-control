@@ -12,6 +12,8 @@ local Ambiguate = Ambiguate
 local GetClassColor = GetClassColor
 local GetRaidTargetIndex = GetRaidTargetIndex
 local GetSpellLink = GetSpellLink
+local IsInGroup = IsInGroup
+local IsInRaid = IsInRaid
 local RaidNotice_AddMessage = RaidNotice_AddMessage -- Interface/FrameXML/RaidWarningFrame.lua
 local SendChatMessage = SendChatMessage
 
@@ -22,8 +24,8 @@ local RaidWarningFrame = RaidWarningFrame -- Interface/FrameXML/RaidWarningFrame
 ---------------------------------------------------------------------
 
 do
-	-- Map zones to the correct channel for SendChatMessage().
-	local channelByZone = {
+	-- Map zones to the correct channel for group messages.
+	local groupChannelByZone = {
 		arena = "PARTY",
 		battleground = "BATTLEGROUND",
 		dungeon = "PARTY",
@@ -31,39 +33,59 @@ do
 		lfg_raid = "INSTANCE_CHAT",
 		raid = "RAID",
 		scenario = "INSTANCE_CHAT",
-		world = "SAY",
+		--world = "PARTY" or "RAID",
 	}
 
-	function addon:GetChannelByZone(zone)
-		return channelByZone[zone]
+	-- Returns channel for group chat or nil if not in a group or the zone is unknown.
+	function addon:GetGroupChannelByZone(zone)
+		local channel
+		if zone == "world" then
+			if IsInRaid() then
+				channel = "RAID"
+			elseif IsInGroup() then
+				channel = "PARTY"
+			end
+		else
+			channel = groupChannelByZone[zone]
+		end
+		return channel
 	end
 end
 
-function addon:GetOutputChannel()
-	local output = self.db.profile.announce.output
-	local zone = self:GetZone()
-	local role = self:GetRole()
-	local channel, msgType
-	if self.db.profile.announce[role].enable and self.db.profile.announce.zone[zone] then
-		if output == "say" then
-			channel = "SAY"
-			msgType = "short"
-		elseif output == "yell" then
-			channel = "YELL"
-			msgType = "short"
-		elseif output == "emote" then
-			channel = "EMOTE"
-			msgType = "emote"
-		else -- if output == "group" then
-			channel = self:GetChannelByZone(zone)
-			msgType = "long"
+do
+	local channelByOutput = {
+		emote = "EMOTE",
+		--group = smart group channel
+		say = "SAY",
+		yell = "YELL",
+	}
+
+	local msgTypeByOutput = {
+		emote = "emote",
+		group = "long",
+		say = "short",
+		yell = "short",
+	}
+
+	function addon:GetOutputChannel()
+		local output = self.db.profile.announce.output
+		local zone = self:GetZone()
+		local role = self:GetRole()
+		local channel, msgType
+		if self.db.profile.announce[role].enable and self.db.profile.announce.zone[zone] then
+			if output == "group" then
+				channel = self:GetGroupChannelByZone(zone) or "SAY"
+			else
+				channel = channelByOutput[output]
+			end
+			msgType = msgTypeByOutput[output]
 		end
+		return channel, msgType
 	end
-	return channel, msgType
 end
 
 function addon:SendChatMessage(message, channel)
-	if self:IsInGroup() or self.db.profile.announce.solo then
+	if IsInGroup() or self.db.profile.announce.solo then
 		SendChatMessage(message, channel)
 	end
 end
