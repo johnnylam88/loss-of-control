@@ -5,6 +5,10 @@
 ## Notes: Loss Of Control announces when you are suffering from a *Loss Of Control* event, e.g., stunned, silenced, spell-locked, etc., that prevents you from performing your role.
 
 ## Author: Johnny C. Lam
+## X-License: BSD License
+## X-Website: https://wow.curseforge.com/projects/loss-of-control
+## X-Curse-Project-ID: 304716
+## X-WoWI-ID: 24840
 
 ## OptionalDeps: Ace3
 ## SavedVariables: LossOfControlDB
