@@ -12,8 +12,8 @@ local pairs = pairs
 local tinsert = table.insert
 local tsort = table.sort
 local wipe = table.wipe
-local GetAddOnMetadata = GetAddOnMetadata
-local UnitGUID = UnitGUID
+-- GLOBALS: GetAddOnMetadata
+-- GLOBALS: UnitGUID
 
 -- Register prefixes and handlers for version check messages.
 addon:RegisterCommDispatch("LOC_V", "OnVersionCheckReceived")

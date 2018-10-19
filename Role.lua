@@ -5,9 +5,9 @@
 
 local ADDON_NAME, addon = ...
 
-local GetInspectSpecialization = GetInspectSpecialization
-local NotifyInspect = NotifyInspect
-local UnitGUID = UnitGUID
+-- GLOBALS: GetInspectSpecialization
+-- GLOBALS: NotifyInspect
+-- GLOBALS: UnitGUID
 
 local inspectPending = nil
 local playerGUID = UnitGUID("player")

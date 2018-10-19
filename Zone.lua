@@ -5,9 +5,9 @@
 
 local ADDON_NAME, addon = ...
 
-local IsInGroup = IsInGroup
-local IsInInstance = IsInInstance
-local IsInRaid = IsInRaid
+-- GLOBALS: IsInGroup
+-- GLOBALS: IsInInstance
+-- GLOBALS: IsInRaid
 local LE_PARTY_CATEGORY_INSTANCE = LE_PARTY_CATEGORY_INSTANCE
 
 local zoneNames = {

@@ -21,14 +21,15 @@ local strlower = string.lower
 local strtrim = strtrim
 local tostringall = tostringall
 local type = type
+-- GLOBALS: _G
+-- GLOBALS: GetAddOnMetadata
+-- GLOBALS: InterfaceOptionsFrame_OpenToCategory
+-- GLOBALS: IsInGroup
+-- GLOBALS: LibStub
+-- GLOBALS: UnitGUID
 local C_LossOfControl = C_LossOfControl
 local C_LossOfControl_GetEventInfo = C_LossOfControl.GetEventInfo
 local C_LossOfControl_GetNumEvents = C_LossOfControl.GetNumEvents
-local GetAddOnMetadata = GetAddOnMetadata
-local InterfaceOptionsFrame_OpenToCategory = InterfaceOptionsFrame_OpenToCategory
-local IsInGroup = IsInGroup
-local LibStub = LibStub
-local UnitGUID = UnitGUID
 
 local addonName = GetAddOnMetadata(ADDON_NAME, "Title")
 _G[ADDON_NAME] = LibStub("AceAddon-3.0"):NewAddon(addon, addonName or ADDON_NAME,

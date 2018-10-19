@@ -5,7 +5,7 @@
 
 local ADDON_NAME, addon = ...
 
-local UnitGUID = UnitGUID
+-- GLOBALS: UnitGUID
 
 -- Register prefixes and handlers for broadcast messages.
 addon:RegisterCommDispatch("LOC_BG", "OnBroadcastGainReceived")

@@ -9,11 +9,11 @@ local ipairs = ipairs
 local pairs = pairs
 local tinsert = table.insert
 local tostring = tostring
-local IsInRaid = IsInRaid
-local UnitClass = UnitClass
-local UnitExists = UnitExists
-local UnitGUID = UnitGUID
-local UnitName = UnitName
+-- GLOBALS: IsInRaid
+-- GLOBALS: UnitClass
+-- GLOBALS: UnitExists
+-- GLOBALS: UnitGUID
+-- GLOBALS: UnitName
 local MAX_PARTY_MEMBERS = MAX_PARTY_MEMBERS -- Interface/FrameXML/PartyMemberFrame.lua
 local MAX_RAID_MEMBERS = MAX_RAID_MEMBERS -- Interface/FrameXML/RaidFrame.lua
 

@@ -6,7 +6,7 @@
 local ADDON_NAME, addon = ...
 local L = addon.L
 
-local GetAddOnMetadata = GetAddOnMetadata
+-- GLOBALS: GetAddOnMetadata
 
 local defaultDB = {
 	global = {

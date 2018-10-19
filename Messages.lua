@@ -8,15 +8,14 @@ local L = addon.L
 
 local format = format
 local tostring = tostring
-local Ambiguate = Ambiguate
-local GetClassColor = GetClassColor
-local GetRaidTargetIndex = GetRaidTargetIndex
-local GetSpellLink = GetSpellLink
-local IsInGroup = IsInGroup
-local IsInRaid = IsInRaid
-local RaidNotice_AddMessage = RaidNotice_AddMessage -- Interface/FrameXML/RaidWarningFrame.lua
-local SendChatMessage = SendChatMessage
-
+-- GLOBALS: Ambiguate
+-- GLOBALS: GetClassColor
+-- GLOBALS: GetRaidTargetIndex
+-- GLOBALS: GetSpellLink
+-- GLOBALS: IsInGroup
+-- GLOBALS: IsInRaid
+-- GLOBALS: RaidNotice_AddMessage -- Interface/FrameXML/RaidWarningFrame.lua
+-- GLOBALS: SendChatMessage
 local DEFAULT_CHAT_FRAME = DEFAULT_CHAT_FRAME -- Interface/FrameXML/ChatFrame.lua
 local ChatTypeInfo = ChatTypeInfo -- Interface/FrameXML/ChatFrame.lua
 local RaidWarningFrame = RaidWarningFrame -- Interface/FrameXML/RaidWarningFrame.xml
