@@ -185,9 +185,14 @@ do
 				msg = format(fmt, name, effect)
 			else
 				if msgType == "long" or msgType == "local" then
-					local link = GetSpellLink(spellID)
-					fmt = L["%s is %s for %s seconds: %s"]
-					msg = format(fmt, name, effect, tostring(remaining), link)
+					local link = spellID and GetSpellLink(spellID)
+					if link then
+						fmt = L["%s is %s for %s seconds: %s"]
+						msg = format(fmt, name, effect, tostring(remaining), link)
+					else
+						fmt = L["%s is %s for %s seconds"]
+						msg = format(fmt, name, effect, tostring(remaining))
+					end
 				end
 			end
 		end
