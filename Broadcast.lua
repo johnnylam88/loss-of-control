@@ -27,7 +27,7 @@ function addon:OnBroadcastGainReceived(prefix, message, channel, sender)
 			end
 		else
 			-- If not ok, then guid contains the error message from :Deserialize().
-			self:Debug("OnBroadcastgainReceived", guid, prefix, message, channel, sender)
+			self:Debug(2, "OnBroadcastgainReceived", guid, prefix, message, channel, sender)
 		end
 	end
 end
@@ -45,7 +45,7 @@ function addon:OnBroadcastLossReceived(prefix, message, channel, sender)
 			end
 		else
 			-- If not ok, then guid contains the error message from :Deserialize().
-			self:Debug("OnBroadcastLossReceived", guid, prefix, message, channel, sender)
+			self:Debug(2, "OnBroadcastLossReceived", guid, prefix, message, channel, sender)
 		end
 	end
 end
@@ -56,7 +56,7 @@ function addon:BroadcastGain(guid, role)
 	local channel = self:GetGroupChannelByZone(zone)
 	if channel then
 		local message = self:Serialize(guid, role)
-		self:Debug("SendCommMessage", prefix, guid, role, channel)
+		self:Debug(2, "SendCommMessage", prefix, guid, role, channel)
 		self:SendCommMessage(prefix, message, channel)
 	end
 end
@@ -67,7 +67,7 @@ function addon:BroadcastLoss(guid, role, spellID, effect, remaining)
 	local channel = self:GetGroupChannelByZone(zone)
 	if channel then
 		local message = self:Serialize(guid, role, spellID, effect, remaining)
-		self:Debug("SendCommMessage", prefix, guid, role, spellID, effect, remaining, channel)
+		self:Debug(2, "SendCommMessage", prefix, guid, role, spellID, effect, remaining, channel)
 		self:SendCommMessage(prefix, message, channel)
 	end
 end

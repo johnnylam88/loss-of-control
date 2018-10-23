@@ -14,7 +14,7 @@ local playerGUID = UnitGUID("player")
 
 function addon:QueueRoleCheck()
 	if not inspectPending then
-		self:Debug("QueueRoleCheck")
+		self:Debug(3, "QueueRoleCheck")
 		-- Register INSPECT_READY to catch when the inspection request is ready.
 		self:RegisterEvent("INSPECT_READY")
 		inspectPending = true
@@ -24,7 +24,7 @@ end
 
 function addon:INSPECT_READY(event, guid)
 	if guid == playerGUID then
-		self:Debug(event, guid)
+		self:Debug(3, event, guid)
 		-- Unregister INSPECT_READY to avoid processing additional events.
 		self:UnregisterEvent("INSPECT_READY")
 		inspectPending = nil
@@ -96,7 +96,7 @@ function addon:UpdateRole()
 	local specialization = GetInspectSpecialization("player")
 	local newRole = specialization and roleBySpecialization[specialization] or "damager"
 	if role ~= newRole then
-		self:Debug("UpdateRole", role, newRole)
+		self:Debug(3, "UpdateRole", role, newRole)
 		role = newRole
 		self:UpdateLossOfControl()
 	end

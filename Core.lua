@@ -11,6 +11,7 @@ local L = addon.L
 
 local floor = math.floor
 local format = string.format
+local gmatch = string.gmatch
 local ipairs = ipairs
 local pairs = pairs
 local setmetatable = setmetatable
@@ -19,10 +20,12 @@ local strjoin = strjoin
 local strlen = string.len
 local strlower = string.lower
 local strtrim = strtrim
+local tonumber = tonumber
 local tostringall = tostringall
 local type = type
 -- GLOBALS: _G
 -- GLOBALS: GetAddOnMetadata
+-- GLOBALS: GetSpellLink
 -- GLOBALS: InterfaceOptionsFrame_OpenToCategory
 -- GLOBALS: IsInGroup
 -- GLOBALS: LibStub
@@ -40,15 +43,18 @@ _G[ADDON_NAME] = LibStub("AceAddon-3.0"):NewAddon(addon, addonName or ADDON_NAME
 -- Debugging code from Grid by Phanx.
 -- https://github.com/phanx-wow/Grid
 
-function addon:Debug(str, ...)
+function addon:Debug(level, str, ...)
 	if not self.db.global.debug then return end
+	if not level then return end
 	if not str or strlen(str) == 0 then return end
 
-	if (...) then
-		if strfind(str, "%%%.%d") or strfind(str, "%%[dfqsx%d]") then
-			str = format(str, ...)
-		else
-			str = strjoin(" ", str, tostringall(...))
+	if level <= self.db.global.debuglevel then
+		if (...) then
+			if type(str) == "string" and (strfind(str, "%%%.%d") or strfind(str, "%%[dfqsx%d]")) then
+				str = format(str, ...)
+			else
+				str = strjoin(" ", str, tostringall(...))
+			end
 		end
 	end
 
@@ -75,7 +81,7 @@ function addon:OnInitialize()
 end
 
 function addon:OnEnable()
-	self:Debug("OnEnable")
+	self:Debug(3, "OnEnable")
 	self:RegisterChatCommand("loc", "ChatCommand")
 	self:RegisterEvent("GROUP_ROSTER_UPDATE", "UpdateGroup")
 	self:RegisterEvent("LOSS_OF_CONTROL_UPDATE", "UpdateLossOfControl")
@@ -87,7 +93,7 @@ function addon:OnEnable()
 end
 
 function addon:OnDisable()
-	self:Debug("OnDisable")
+	self:Debug(3, "OnDisable")
 	self:UnregisterChatCommand("loc")
 	self:UnregisterEvent("GROUP_ROSTER_UPDATE")
 	self:UnregisterEvent("LOSS_OF_CONTROL_UPDATE")
@@ -129,20 +135,41 @@ function addon:ChatCommand(input)
 	if not input or input == "" then
 		self:OpenSettingsFrame()
 	else
-		input = strlower(input)
-		if input == "version" then
+		local iterator = gmatch(strlower(input), "%w+")
+		local word = iterator()
+		if word == "version" then
 			local version = GetAddOnMetadata(ADDON_NAME, "Version")
 			if version == "@" .. "project-version" .. "@" then
 				self:Print("developer version")
 			else
 				self:Print(version)
 			end
-		elseif input == "debug" then
-			-- Toggle debug option.
-			local value = not self.db.global.debug
-			self.db.global.debug = value
-			self:Print(value and L["Debugging is on."] or L["Debugging is off."])
-		elseif input == "ping" then
+		elseif word == "debug" then
+			word = iterator()
+			if word then
+				local value = tonumber(word)
+				if value then
+					-- Clamp the debug level.
+					if value < 1 then
+						value = 1
+					elseif value > 3 then
+						value = 3
+					end
+					self.db.global.debug = true
+					self.db.global.debuglevel = value
+					self:Print(format(L["Debugging is on (level %s)."], value))
+				end
+			else
+				-- Toggle debug option.
+				local value = not self.db.global.debug
+				self.db.global.debug = value
+				if value then
+					self:Print(format(L["Debugging is on (level %s)."], self.db.global.debuglevel))
+				else
+					self:Print(L["Debugging is off."])
+				end
+			end
+		elseif word == "ping" then
 			self:VersionCheck() -- from Version.lua
 		end
 	end
@@ -179,12 +206,17 @@ do
 		STUN_MECHANIC = "stun",
 	}
 
-	function addon:IsWatchedEvent(locType)
+	function addon:IsWatchedEvent(locType, spellID)
 		local role = self:GetRole()
 		local option = locOption[locType]
 		local watched
 		if not option then
-			self:Debug("IsWatchedEvent", "unknown effect", locType)
+			local link = spellID and GetSpellLink(spellID)
+			if link then
+				self:Debug(1, L["Unknown Loss Of Control event:"], locType, link)
+			else
+				self:Debug(1, L["Unknown Loss Of Control event:"], locType, spellID)
+			end
 			watched = true
 		elseif type(option) == "string" and self.db.profile.announce[role][option] then
 			watched = true
@@ -220,12 +252,12 @@ do
 	end
 
 	function addon:ScanEvents()
-		self:Debug("ScanEvents")
+		self:Debug(3, "ScanEvents")
 		locRemaining = nil
 		for index = 1, C_LossOfControl_GetNumEvents() do
 			local locType, spellID, text, _, _, timeRemaining = C_LossOfControl_GetEventInfo(index)
-			if self:IsWatchedEvent(locType) then
-				self:Debug("ScanEvents", locType, spellID, text, timeRemaining)
+			if self:IsWatchedEvent(locType, spellID) then
+				self:Debug(2, "ScanEvents", locType, spellID, text, timeRemaining)
 				if not locRemaining or locRemaining < timeRemaining then
 					locRemaining = timeRemaining
 					locSpellID = spellID
@@ -255,7 +287,7 @@ do
 	end
 
 	function addon:PlayerControlGained()
-		self:Debug("PlayerControlGained")
+		self:Debug(3, "PlayerControlGained")
 		local role = self:GetRole()
 		if self.db.profile.announce.regain then
 			if self:IsAnnounceEnabled() then
@@ -273,7 +305,7 @@ do
 	end
 
 	function addon:PlayerControlLost()
-		self:Debug("PlayerControlLost")
+		self:Debug(3, "PlayerControlLost")
 		local remaining = self:GetRemainingTime()
 		-- Round to tenths of a second.
 		local remainingRounded = round(remaining, 1)
@@ -296,7 +328,7 @@ do
 end
 
 function addon:UpdateLossOfControl()
-	self:Debug("UpdateLossOfControl")
+	self:Debug(3, "UpdateLossOfControl")
 	local old = self:GetRemainingTime()
 	self:ScanEvents()
 	local current = self:GetRemainingTime()

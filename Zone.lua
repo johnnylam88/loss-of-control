@@ -51,7 +51,7 @@ function addon:UpdateZone()
 		end
 	end
 	if zone ~= newZone then
-		self:Debug("UpdateZone", zone, newZone)
+		self:Debug(3, "UpdateZone", zone, newZone)
 		zone = newZone
 	end
 end

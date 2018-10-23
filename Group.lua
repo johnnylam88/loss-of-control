@@ -65,7 +65,6 @@ do
 	end
 
 	local nonexistentGUID = {}
-	local updated
 
 	function addon:UpdateUnit(unit)
 		local guid = UnitGUID(unit)
@@ -76,21 +75,18 @@ do
 			local _, class = UnitClass(unit)
 			local name, realm = UnitName(unit)
 			if realm == "" then realm = nil end
+			local fullName = (name and realm) and (name .. "-" .. realm) or name
 
-			if classByGUID[guid] ~= class or nameByGUID[guid] ~= name or realmByGUID[guid] ~= realm
+			if classByGUID[guid] ~= class
+					or nameByGUID[guid] ~= name or realmByGUID[guid] ~= realm
 					or unitByGUID[guid] ~= unit or guidByUnit[unit] ~= guid then
-				self:Debug("UpdateUnit", tostring(classByGUID[guid]), tostring(class),
-					tostring(nameByGUID[guid]), tostring(name), tostring(realmByGUID[guid]), tostring(realm),
-					tostring(unitByGUID[guid]), unit, tostring(guidByUnit[unit]), guid)
+				self:Debug(3, "UpdateUnit", tostring(class), tostring(fullName), unit, guid)
 				classByGUID[guid] = class
 				nameByGUID[guid] = name
 				realmByGUID[guid] = realm
 				unitByGUID[guid] = unit
 				guidByUnit[unit] = guid
-				updated = true
 			end
-		else
-			updated = true
 		end
 	end
 
@@ -106,6 +102,7 @@ do
 			end
 		end
 		for guid in pairs(nonexistentGUID) do
+			self:Debug(3, "UpdateGroup", guid, "(no longer in group)")
 			classByGUID[guid] = nil
 			nameByGUID[guid] = nil
 			realmByGUID[guid] = nil
@@ -115,12 +112,7 @@ do
 		for unit, guid in pairs(guidByUnit) do
 			if unitByGUID[guid] ~= unit then
 				guidByUnit[unit] = nil
-				updated = true
 			end
-		end
-		if updated then
-			self:Debug("UpdateGroup")
-			updated = nil
 		end
 	end
 end

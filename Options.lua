@@ -11,6 +11,7 @@ local L = addon.L
 local defaultDB = {
 	global = {
 		debug = false,
+		debuglevel = 1,
 		debugFrame = "ChatFrame1",
 	},
 	profile = {
@@ -432,6 +433,15 @@ local options = {
 					desc = L["Toggle debugging output."],
 					type = "toggle",
 					order = 10,
+				},
+				debuglevel = {
+					name = L["Debug level"],
+					desc = L["The level of debugging information to output."],
+					type = "range",
+					order = 15,
+					min = 1,
+					max = 3,
+					step = 1,
 				},
 				debugFrame = {
 					name = L["Output frame"],

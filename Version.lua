@@ -26,12 +26,12 @@ local versions = {}
 local t = {}
 
 function addon:OnVersionCheckReceived(prefix, message, channel, sender)
-	self:Debug("OnVersionCheckReceived", prefix, message, channel, sender)
+	self:Debug(2, "OnVersionCheckReceived", prefix, message, channel, sender)
 	self:SendCommMessage("LOC_VR", addonVersion, channel)
 end
 
 function addon:OnVersionCheckReplyReceived(prefix, message, channel, sender)
-	self:Debug("OnVersionCheckReplyReceived", prefix, message, channel, sender)
+	self:Debug(2, "OnVersionCheckReplyReceived", prefix, message, channel, sender)
 	versions[sender] = message
 end
 
@@ -42,7 +42,7 @@ function addon:VersionCheck()
 		local prefix = "LOC_V"
 		local channel = self:GetGroupChannelByZone(zone)
 		if channel then
-			self:Debug("SendCommMessage", prefix, addonVersion, channel)
+			self:Debug(2, "SendCommMessage", prefix, addonVersion, channel)
 			self:SendCommMessage(prefix, addonVersion, channel)
 		else
 			-- Solo, so just add our own version as a reply.
