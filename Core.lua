@@ -23,12 +23,15 @@ local strtrim = strtrim
 local tonumber = tonumber
 local tostringall = tostringall
 local type = type
+local unpack = unpack
 -- GLOBALS: _G
 -- GLOBALS: GetAddOnMetadata
 -- GLOBALS: GetSpellLink
+-- GLOBALS: GetTime
 -- GLOBALS: InterfaceOptionsFrame_OpenToCategory
 -- GLOBALS: IsInGroup
 -- GLOBALS: LibStub
+-- GLOBALS: UnitDebuff
 -- GLOBALS: UnitGUID
 local C_LossOfControl = C_LossOfControl
 local C_LossOfControl_GetEventInfo = C_LossOfControl.GetEventInfo
@@ -86,6 +89,7 @@ function addon:OnEnable()
 	self:RegisterEvent("GROUP_ROSTER_UPDATE", "UpdateGroup")
 	self:RegisterEvent("LOSS_OF_CONTROL_UPDATE", "UpdateLossOfControl")
 	self:RegisterEvent("PLAYER_ENTERING_WORLD", "Update")
+	self:RegisterEvent("UNIT_AURA")
 	self:RegisterEvent("UNIT_NAME_UPDATE", "UpdateGroup")
 	self:RegisterEvent("UNIT_PORTRAIT_UPDATE", "UpdateGroup")
 	self:RegisterEvent("ZONE_CHANGED_NEW_AREA", "UpdateZone")
@@ -98,9 +102,16 @@ function addon:OnDisable()
 	self:UnregisterEvent("GROUP_ROSTER_UPDATE")
 	self:UnregisterEvent("LOSS_OF_CONTROL_UPDATE")
 	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
+	self:UnregisterEvent("UNIT_AURA")
 	self:UnregisterEvent("UNIT_NAME_UPDATE")
 	self:UnregisterEvent("UNIT_PORTRAIT_UPDATE")
 	self:UnregisterEvent("ZONE_CHANGED_NEW_AREA")
+end
+
+function addon:UNIT_AURA(event, unit)
+	if unit == "player" then
+		self:UpdateLossOfControl(event)
+	end
 end
 
 function addon:Update()
@@ -206,6 +217,13 @@ do
 		STUN_MECHANIC = "stun",
 	}
 
+	local locAura = {
+		[ 10730] = { "PACIFY", L["Pacified"] }, -- Pacify
+		[ 74720] = { "CONFUSE", L["Disoriented"] }, -- Pound
+		[149955] = { "STUN", L["Stunned"] }, -- Devouring Blackness
+		[150634] = { "STUN", L["Stunned"] }, -- Leviathan's Grip
+	}
+
 	function addon:IsWatchedEvent(locType, spellID)
 		local role = self:GetRole()
 		local option = locOption[locType]
@@ -251,17 +269,33 @@ do
 		return locEffect
 	end
 
+	function addon:AddEvent(spellID, text, timeRemaining)
+		self:Debug(2, "AddEvent", spellID, text, timeRemaining)
+		if not locRemaining or locRemaining < timeRemaining then
+			locRemaining = timeRemaining
+			locSpellID = spellID
+			locEffect = text
+		end
+	end
+
 	function addon:ScanEvents()
 		self:Debug(3, "ScanEvents")
 		locRemaining = nil
 		for index = 1, C_LossOfControl_GetNumEvents() do
 			local locType, spellID, text, _, _, timeRemaining = C_LossOfControl_GetEventInfo(index)
 			if self:IsWatchedEvent(locType, spellID) then
-				self:Debug(2, "ScanEvents", locType, spellID, text, timeRemaining)
-				if not locRemaining or locRemaining < timeRemaining then
-					locRemaining = timeRemaining
-					locSpellID = spellID
-					locEffect = text
+				self:AddEvent(spellID, text, timeRemaining)
+			end
+		end
+		local now = GetTime()
+		for index = 1, 40 do
+			local name, _, _, _, _, expirationTime, _, _, _, spellID = UnitDebuff("player", index)
+			if not name then break end
+			local t = locAura[spellID]
+			if t then
+				local locType, text = unpack(t)
+				if locType and self:IsWatchedEvent(locType, spellID) then
+					self:AddEvent(spellID, text, expirationTime - now)
 				end
 			end
 		end
@@ -327,8 +361,8 @@ do
 	end
 end
 
-function addon:UpdateLossOfControl()
-	self:Debug(3, "UpdateLossOfControl")
+function addon:UpdateLossOfControl(event)
+	self:Debug(3, "UpdateLossOfControl", event)
 	local old = self:GetRemainingTime()
 	self:ScanEvents()
 	local current = self:GetRemainingTime()
