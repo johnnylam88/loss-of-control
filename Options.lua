@@ -59,6 +59,7 @@ local defaultDB = {
 			chat = true, -- Alert in chat window.
 			raidWarning = true, -- Alert as raid warning message.
 			regain = true, -- Alert for other group members regaining control.
+			regainThreshold = 5, -- Only announce members regaining control after Loss Of Control lasting longer than 5 seconds.
 		}
 	},
 }
@@ -246,7 +247,7 @@ local options = {
 				},
 				regainThreshold = {
 					name = L["Minimum regain duration"],
-					desc = L["Only announce player regaining control if the duration of the Loss Of Control exceeds a minimum number of seconds."],
+					desc = L["Only announce when the player regains control if the duration of the Loss Of Control exceeds a minimum number of seconds."],
 					type = "range",
 					order = 45,
 					min = 0,
@@ -421,6 +422,18 @@ local options = {
 					type = "toggle",
 					order = 30,
 					width = "full",
+				},
+				regainThreshold = {
+					name = L["Minimum regain duration"],
+					desc = L["Only alert when other members regain control if the duration of the Loss Of Control exceeds a minimum number of seconds."],
+					type = "range",
+					order = 40,
+					min = 0,
+					max = 15,
+					step = 0.1,
+					disabled = function()
+						return not (addon.db.profile.alert.enable and addon.db.profile.alert.regain)
+					end,
 				},
 			},
 		},

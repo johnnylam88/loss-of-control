@@ -337,7 +337,7 @@ do
 			self:SendLocalMessage(localMessage)
 		end
 		-- Always broadcast and allow the receiver to decide whether to use the information.
-		self:BroadcastGain(guid, role) -- from Broadcast.lua
+		self:BroadcastGain(guid, role, duration) -- from Broadcast.lua
 	end
 
 	function addon:PlayerControlLost()
