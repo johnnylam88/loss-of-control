@@ -250,6 +250,8 @@ do
 	end
 
 	-- We track only the Loss of Control event with the longest remaining duration.
+	-- Time at which the Loss of Control occurred.
+	local locStart
 	-- Remaining time for the Loss Of Control event.
 	local locRemaining
 	-- ID of spell that triggered the Loss Of Control event.
@@ -257,17 +259,12 @@ do
 	-- Descriptive text of effect caused by the Loss Of Control event.
 	local locEffect
 
-	function addon:GetRemainingTime()
-		return locRemaining
-	end
+	function addon:GetStartTime() return locStart end
+	function addon:GetRemainingTime() return locRemaining end
+	function addon:GetSpellID() return locSpellID end
+	function addon:GetEffect() return locEffect end
 
-	function addon:GetSpellID()
-		return locSpellID
-	end
-
-	function addon:GetEffect()
-		return locEffect
-	end
+	function addon:SetStartTime(start) locStart = start end
 
 	function addon:AddEvent(spellID, text, timeRemaining)
 		self:Debug(2, "AddEvent", spellID, text, timeRemaining)
@@ -323,7 +320,12 @@ do
 	function addon:PlayerControlGained()
 		self:Debug(3, "PlayerControlGained")
 		local role = self:GetRole()
-		if self.db.profile.announce.regain then
+		local now = GetTime()
+		local start = self:GetStartTime()
+		-- Round duration of Loss Of Control to tenths of a second.
+		local duration = (now and start) and round(now - start, 1) or 0
+		self:SetStartTime() -- reset the start time
+		if self.db.profile.announce.regain and duration >= self.db.profile.announce.regainThreshold then
 			if self:IsAnnounceEnabled() then
 				local channel, msgType = self:GetOutputChannel()
 				if channel and msgType then
@@ -340,13 +342,20 @@ do
 
 	function addon:PlayerControlLost()
 		self:Debug(3, "PlayerControlLost")
+		local now = GetTime()
+		local start = self:GetStartTime()
+		if not start then
+			start = now
+			self:SetStartTime(now)
+		end
 		local remaining = self:GetRemainingTime()
-		-- Round to tenths of a second.
-		local remainingRounded = round(remaining, 1)
-		if remainingRounded > self.db.profile.announce.threshold then
+		-- Round duration of Loss Of Control to tenths of a second.
+		local duration = round(now + remaining - start, 1)
+		if duration > self.db.profile.announce.threshold then
 			local role = self:GetRole()
 			local spellID = self:GetSpellID()
 			local effect = self:GetEffect()
+			local remainingRounded = round(remaining, 1)
 			if self:IsAnnounceEnabled() then
 				local channel, msgType = self:GetOutputChannel()
 				if channel and msgType then

@@ -25,6 +25,7 @@ local defaultDB = {
 			output = "emote", -- Use emotes (least intrusive option).
 			threshold = 1.5, -- Only announce for events lasting longer than 1.5 seconds.
 			regain = false, -- Don't announce when player control is regained.
+			regainThreshold = 5, -- Only announce player regaining control after Loss Of Control lasting longer than 5 seconds.
 			solo = false, -- No announcements if the player is not in a group.
 			tank = {
 				-- Default to enabling announcements for tanks for events that prevent all actions.
@@ -57,7 +58,7 @@ local defaultDB = {
 			enable = true, -- Enable alerts from other group members.
 			chat = true, -- Alert in chat window.
 			raidWarning = true, -- Alert as raid warning message.
-			regain = false, -- Ignore alerts for regaining control.
+			regain = true, -- Alert for other group members regaining control.
 		}
 	},
 }
@@ -242,6 +243,18 @@ local options = {
 					type = "toggle",
 					order = 40,
 					width = "full",
+				},
+				regainThreshold = {
+					name = L["Minimum regain duration"],
+					desc = L["Only announce player regaining control if the duration of the Loss Of Control exceeds a minimum number of seconds."],
+					type = "range",
+					order = 45,
+					min = 0,
+					max = 15,
+					step = 0.1,
+					disabled = function()
+						return not (addon.db.profile.announce.enable and addon.db.profile.announce.regain)
+					end,
 				},
 				solo = {
 					name = L["Announce while solo"],
