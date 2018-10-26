@@ -58,6 +58,7 @@ local defaultDB = {
 			enable = true, -- Enable alerts from other group members.
 			chat = true, -- Alert in chat window.
 			raidWarning = true, -- Alert as raid warning message.
+			threshold = 1.5, -- Only alert for events lasting longer than 1.5 seconds.
 			regain = true, -- Alert for other group members regaining control.
 			regainThreshold = 5, -- Only announce members regaining control after Loss Of Control lasting longer than 5 seconds.
 		}
@@ -230,8 +231,8 @@ local options = {
 					},
 				},
 				threshold = {
-					name = L["Minimum duration"],
-					desc = L["Only announce events if the duration exceeds a minimum number of seconds."],
+					name = L["Minimum loss duration"],
+					desc = L["Only alert when the player is affected by a Loss Of Control event if the duration exceeds a minimum number of seconds."],
 					type = "range",
 					order = 30,
 					min = 0,
@@ -415,6 +416,15 @@ local options = {
 					type = "toggle",
 					order = 20,
 					width = "full",
+				},
+				threshold = {
+					name = L["Minimum loss duration"],
+					desc = L["Only alert when other members are affected by a Loss Of Control event if the duration exceeds a minimum number of seconds."],
+					type = "range",
+					order = 25,
+					min = 0,
+					max = 10,
+					step = 0.1,
 				},
 				regain = {
 					name = L["Alert when other members regain control"],

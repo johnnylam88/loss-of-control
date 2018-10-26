@@ -365,7 +365,7 @@ do
 			end
 			local localMessage = self:CreateLossMessage("local", guid, role, spellID, effect, remainingRounded)
 			self:SendLocalMessage(localMessage)
-			self:BroadcastLoss(guid, role, spellID, effect, remainingRounded) -- from Broadcast.lua
+			self:BroadcastLoss(guid, role, spellID, effect, remainingRounded, duration) -- from Broadcast.lua
 		end
 	end
 end
