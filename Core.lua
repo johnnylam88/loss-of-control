@@ -59,11 +59,10 @@ function addon:Debug(level, str, ...)
 				str = strjoin(" ", str, tostringall(...))
 			end
 		end
+		local name = self.moduleName or self.name or ADDON_NAME
+		local frame = _G[addon.db.global.debugFrame]
+		self:Print(frame, str)
 	end
-
-	local name = self.moduleName or self.name or ADDON_NAME
-	local frame = _G[addon.db.global.debugFrame]
-	self:Print(frame, str)
 end
 
 ---------------------------------------------------------------------
