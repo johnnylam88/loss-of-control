@@ -317,7 +317,7 @@ do
 	end
 
 	function addon:PlayerControlGained()
-		self:Debug(3, "PlayerControlGained")
+		self:Debug(2, "PlayerControlGained")
 		local role = self:GetRole()
 		local now = GetTime()
 		local start = self:GetStartTime()
@@ -340,7 +340,7 @@ do
 	end
 
 	function addon:PlayerControlLost()
-		self:Debug(3, "PlayerControlLost")
+		self:Debug(2, "PlayerControlLost")
 		local now = GetTime()
 		local start = self:GetStartTime()
 		if not start then
