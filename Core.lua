@@ -217,7 +217,10 @@ do
 	}
 
 	local locAura = {
+		[  3589] = { "SILENCE", L["Silenced"] }, -- Deafening Screech
 		[ 10730] = { "PACIFY", L["Pacified"] }, -- Pacify
+		[ 12890] = { "PACIFY", L["Invulnerable"] }, -- Deep Slumber
+		[ 17307] = { "STUN", L["Stunned"] }, -- Knockout
 		[ 74720] = { "CONFUSE", L["Disoriented"] }, -- Pound
 		[149955] = { "STUN", L["Stunned"] }, -- Devouring Blackness
 		[150634] = { "STUN", L["Stunned"] }, -- Leviathan's Grip
