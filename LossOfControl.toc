@@ -13,9 +13,7 @@
 ## OptionalDeps: Ace3, MooZone-1.0
 ## SavedVariables: LossOfControlDB
 
-#@no-lib-strip@
-libs\libs.xml
-#@end-no-lib-strip@
+embeds.xml
 
 Localization.lua
 Core.lua
