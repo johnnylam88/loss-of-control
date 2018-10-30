@@ -19,6 +19,7 @@ local defaultDB = {
 		announce = {
 			enable = true, -- Enable announcements.
 			zone = {
+				scenario = true,
 				dungeon = true,
 				lfg_dungeon = true,
 			},
@@ -180,17 +181,17 @@ local options = {
 							type = "toggle",
 							order = 10,
 						},
+						arena = {
+							name = L["Arena"],
+							desc = L["Enable announcements while in an arena."],
+							type = "toggle",
+							order = 15,
+						},
 						battleground = {
 							name = L["Battlegrounds"],
 							desc = L["Enable announcements while in a battleground."],
 							type = "toggle",
 							order = 20,
-						},
-						arena = {
-							name = L["Arena"],
-							desc = L["Enable announcements while in an arena."],
-							type = "toggle",
-							order = 30,
 						},
 						dungeon = {
 							name = L["Dungeon"],
@@ -204,15 +205,21 @@ local options = {
 							type = "toggle",
 							order = 50,
 						},
+						scenario = {
+							name = L["Scenarios"],
+							desc = L["Enable announcements while in a scenario."],
+							type = "toggle",
+							order = 55,
+						},
 						lfg_dungeon = {
-							name = L["LFG Dungeon"],
-							desc = L["Enable announcements while in a Looking For Group dungeon."],
+							name = L["Dungeon Finder"],
+							desc = L["Enable announcements while in a Dungeon Finder group."],
 							type = "toggle",
 							order = 60,
 						},
 						lfg_raid = {
-							name = L["LFG Raid"],
-							desc = L["Enable announcements while in a Looking For Group raid."],
+							name = L["Raid Finder"],
+							desc = L["Enable announcements while in a Raid Finder group."],
 							type = "toggle",
 							order = 70,
 						},

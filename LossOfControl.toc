@@ -10,7 +10,7 @@
 ## X-Curse-Project-ID: 304716
 ## X-WoWI-ID: 24840
 
-## OptionalDeps: Ace3
+## OptionalDeps: Ace3, MooZone-1.0
 ## SavedVariables: LossOfControlDB
 
 #@no-lib-strip@
@@ -26,4 +26,3 @@ Messages.lua
 Options.lua
 Role.lua
 Version.lua
-Zone.lua

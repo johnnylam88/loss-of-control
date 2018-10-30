@@ -71,6 +71,8 @@ end
 -- Reference to the frame registered into the Interface Options panel.
 local settingsFrame
 
+local MooZone = LibStub("MooZone-1.0")
+
 function addon:OnInitialize()
 	local defaultDB = self:GetDefaultDB()
 	local options = self:GetOptions()
@@ -91,7 +93,7 @@ function addon:OnEnable()
 	self:RegisterEvent("UNIT_AURA")
 	self:RegisterEvent("UNIT_NAME_UPDATE", "UpdateGroup")
 	self:RegisterEvent("UNIT_PORTRAIT_UPDATE", "UpdateGroup")
-	self:RegisterEvent("ZONE_CHANGED_NEW_AREA", "UpdateZone")
+	MooZone.RegisterCallback(self, "MooZone_ZoneChanged", "UpdateLossOfControl")
 	self:RegisterAllComm()
 end
 
@@ -104,7 +106,7 @@ function addon:OnDisable()
 	self:UnregisterEvent("UNIT_AURA")
 	self:UnregisterEvent("UNIT_NAME_UPDATE")
 	self:UnregisterEvent("UNIT_PORTRAIT_UPDATE")
-	self:UnregisterEvent("ZONE_CHANGED_NEW_AREA")
+	MooZone.UnregisterCallback(self, "MooZone_ZoneChanged")
 end
 
 function addon:UNIT_AURA(event, unit)
@@ -115,8 +117,11 @@ end
 
 function addon:Update()
 	self:UpdateGroup()
-	self:UpdateZone()
 	self:QueueRoleCheck()
+end
+
+function addon:GetZone()
+	return MooZone:GetZone()
 end
 
 ---------------------------------------------------------------------
