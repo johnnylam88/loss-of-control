@@ -9,6 +9,7 @@ local ADDON_NAME, addon = ...
 -- GLOBALS: UnitGUID
 
 local MooUnit = LibStub("MooUnit-1.0")
+local MooZone = LibStub("MooZone-1.0")
 
 -- Register prefixes and handlers for broadcast messages.
 local CONTROL_GAIN_V1_PREFIX = "LOC_BG"
@@ -83,7 +84,7 @@ function addon:OnBroadcastLossReceived(prefix, message, channel, sender)
 end
 
 function addon:BroadcastGain(guid, role, duration)
-	local zone = self:GetZone()
+	local zone = MooZone:GetZone()
 	local prefix = CONTROL_GAIN_PREFIX
 	local channel = self:GetGroupChannelByZone(zone)
 	if channel then
@@ -94,7 +95,7 @@ function addon:BroadcastGain(guid, role, duration)
 end
 
 function addon:BroadcastLoss(guid, role, spellID, effect, remaining, duration)
-	local zone = self:GetZone()
+	local zone = MooZone:GetZone()
 	local prefix = CONTROL_LOST_PREFIX
 	local channel = self:GetGroupChannelByZone(zone)
 	if channel then

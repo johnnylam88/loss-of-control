@@ -22,6 +22,7 @@ local ChatTypeInfo = ChatTypeInfo -- Interface/FrameXML/ChatFrame.lua
 local RaidWarningFrame = RaidWarningFrame -- Interface/FrameXML/RaidWarningFrame.xml
 
 local MooUnit = LibStub("MooUnit-1.0")
+local MooZone = LibStub("MooZone-1.0")
 
 ---------------------------------------------------------------------
 
@@ -73,7 +74,7 @@ do
 		local output = self.db.profile.announce.output
 		local channel, msgType
 		if output == "group" then
-			local zone = self:GetZone()
+			local zone = MooZone:GetZone()
 			channel = self:GetGroupChannelByZone(zone) or "SAY"
 		else
 			channel = channelByOutput[output]

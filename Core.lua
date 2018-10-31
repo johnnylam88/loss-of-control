@@ -136,10 +136,6 @@ do
 	end
 end
 
-function addon:GetZone()
-	return MooZone:GetZone()
-end
-
 ---------------------------------------------------------------------
 -- Register prefixes and message handlers for AceComm-3.0.
 
@@ -339,7 +335,7 @@ do
 
 	function addon:IsAnnounceEnabled()
 		local role = self:GetRole()
-		local zone = self:GetZone()
+		local zone = MooZone:GetZone()
 		return (self.db.profile.announce.enable
 			and self.db.profile.announce[role].enable
 			and self.db.profile.announce.zone[zone]

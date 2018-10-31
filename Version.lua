@@ -17,6 +17,7 @@ local wipe = table.wipe
 -- GLOBALS: UnitGUID
 
 local MooUnit = LibStub("MooUnit-1.0")
+local MooZone = LibStub("MooZone-1.0")
 
 -- Register prefixes and handlers for version check messages.
 addon:RegisterCommDispatch("LOC_V", "OnVersionCheckReceived")
@@ -41,7 +42,7 @@ end
 function addon:VersionCheck()
 	if not timer then
 		wipe(versions)
-		local zone = self:GetZone()
+		local zone = MooZone:GetZone()
 		local prefix = "LOC_V"
 		local channel = self:GetGroupChannelByZone(zone)
 		if channel then
