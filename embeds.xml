@@ -13,5 +13,6 @@
 	<Include file="Libs\AceSerializer-3.0\AceSerializer-3.0.xml" />
 	<Include file="Libs\AceTimer-3.0\AceTimer-3.0.xml" />
 	<Include file="Libs\AceConfigDialog-3.0\AceConfigDialog-3.0.xml" />
+	<Include file="Libs\MooUnit-1.0\MooUnit-1.0.xml" />
 	<Include file="Libs\MooZone-1.0\MooZone-1.0.xml" />
 </Ui>
