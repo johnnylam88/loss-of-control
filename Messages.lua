@@ -14,11 +14,14 @@ local tostring = tostring
 -- GLOBALS: GetSpellLink
 -- GLOBALS: IsInGroup
 -- GLOBALS: IsInRaid
+-- GLOBALS: LibStub
 -- GLOBALS: RaidNotice_AddMessage -- Interface/FrameXML/RaidWarningFrame.lua
 -- GLOBALS: SendChatMessage
 local DEFAULT_CHAT_FRAME = DEFAULT_CHAT_FRAME -- Interface/FrameXML/ChatFrame.lua
 local ChatTypeInfo = ChatTypeInfo -- Interface/FrameXML/ChatFrame.lua
 local RaidWarningFrame = RaidWarningFrame -- Interface/FrameXML/RaidWarningFrame.xml
+
+local MooUnit = LibStub("MooUnit-1.0")
 
 ---------------------------------------------------------------------
 
@@ -129,7 +132,7 @@ do
 	end
 
 	function addon:GetDecoratedName(msgType, guid, role)
-		local name = self:GetFullNameByGUID(guid)
+		local name = MooUnit:GetNameByGUID(guid)
 		if name then name = Ambiguate(name, "none") end
 
 		local decoratedName
@@ -139,7 +142,7 @@ do
 		if msgType == "emote" then
 			-- keep defaults
 		else
-			local unit = self:GetUnitByGUID(guid)
+			local unit = MooUnit:GetUnitByGUID(guid)
 			local index = unit and GetRaidTargetIndex(unit)
 			if msgType == "short" or msgType == "long" then
 				-- say/yell/party/raid/instance/battleground chat: no UI escape sequences allowed.

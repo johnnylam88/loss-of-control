@@ -31,6 +31,7 @@ local unpack = unpack
 -- GLOBALS: InterfaceOptionsFrame_OpenToCategory
 -- GLOBALS: IsInGroup
 -- GLOBALS: LibStub
+-- GLOBALS: UnitClass
 -- GLOBALS: UnitDebuff
 -- GLOBALS: UnitGUID
 local C_LossOfControl = C_LossOfControl
@@ -71,6 +72,7 @@ end
 -- Reference to the frame registered into the Interface Options panel.
 local settingsFrame
 
+local MooUnit = LibStub("MooUnit-1.0")
 local MooZone = LibStub("MooZone-1.0")
 
 function addon:OnInitialize()
@@ -87,12 +89,12 @@ end
 function addon:OnEnable()
 	self:Debug(3, "OnEnable")
 	self:RegisterChatCommand("loc", "ChatCommand")
-	self:RegisterEvent("GROUP_ROSTER_UPDATE", "UpdateGroup")
 	self:RegisterEvent("LOSS_OF_CONTROL_UPDATE", "UpdateLossOfControl")
-	self:RegisterEvent("PLAYER_ENTERING_WORLD", "Update")
+	self:RegisterEvent("PLAYER_ENTERING_WORLD", "QueueRoleCheck")
 	self:RegisterEvent("UNIT_AURA")
-	self:RegisterEvent("UNIT_NAME_UPDATE", "UpdateGroup")
-	self:RegisterEvent("UNIT_PORTRAIT_UPDATE", "UpdateGroup")
+	MooUnit.RegisterCallback(self, "MooUnit_UnitChanged", "UpdateClass")
+	MooUnit.RegisterCallback(self, "MooUnit_UnitJoined", "UpdateClass")
+	MooUnit.RegisterCallback(self, "MooUnit_UnitLeft")
 	MooZone.RegisterCallback(self, "MooZone_ZoneChanged", "UpdateLossOfControl")
 	self:RegisterAllComm()
 end
@@ -100,12 +102,12 @@ end
 function addon:OnDisable()
 	self:Debug(3, "OnDisable")
 	self:UnregisterChatCommand("loc")
-	self:UnregisterEvent("GROUP_ROSTER_UPDATE")
 	self:UnregisterEvent("LOSS_OF_CONTROL_UPDATE")
 	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 	self:UnregisterEvent("UNIT_AURA")
-	self:UnregisterEvent("UNIT_NAME_UPDATE")
-	self:UnregisterEvent("UNIT_PORTRAIT_UPDATE")
+	MooUnit.UnregisterCallback(self, "MooUnit_UnitChanged")
+	MooUnit.UnregisterCallback(self, "MooUnit_UnitJoined")
+	MooUnit.UnregisterCallback(self, "MooUnit_UnitLeft")
 	MooZone.UnregisterCallback(self, "MooZone_ZoneChanged")
 end
 
@@ -115,9 +117,23 @@ function addon:UNIT_AURA(event, unit)
 	end
 end
 
-function addon:Update()
-	self:UpdateGroup()
-	self:QueueRoleCheck()
+do
+	local classByGUID = {}
+
+	function addon:GetClassByGUID(guid)
+		return classByGUID[guid]
+	end
+
+	function addon:UpdateClass(event, guid, unit)
+		local _, class = UnitClass(unit)
+		if class then
+			classByGUID[guid] = class
+		end
+	end
+
+	function addon:MooUnit_UnitLeft(event, guid)
+		classByGUID[guid] = nil
+	end
 end
 
 function addon:GetZone()

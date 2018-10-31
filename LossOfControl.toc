@@ -19,7 +19,6 @@ Localization.lua
 Core.lua
 
 Broadcast.lua
-Group.lua
 Messages.lua
 Options.lua
 Role.lua

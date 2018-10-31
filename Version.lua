@@ -13,7 +13,10 @@ local tinsert = table.insert
 local tsort = table.sort
 local wipe = table.wipe
 -- GLOBALS: GetAddOnMetadata
+-- GLOBALS: LibStub
 -- GLOBALS: UnitGUID
+
+local MooUnit = LibStub("MooUnit-1.0")
 
 -- Register prefixes and handlers for version check messages.
 addon:RegisterCommDispatch("LOC_V", "OnVersionCheckReceived")
@@ -46,7 +49,7 @@ function addon:VersionCheck()
 			self:SendCommMessage(prefix, addonVersion, channel)
 		else
 			-- Solo, so just add our own version as a reply.
-			local name = self:GetNameByGUID(guid)
+			local name = MooUnit:GetNameByGUID(guid)
 			versions[name] = addonVersion
 		end
 		timer = self:ScheduleTimer("PrintVersionCheck", 1)

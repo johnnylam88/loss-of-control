@@ -5,7 +5,10 @@
 
 local ADDON_NAME, addon = ...
 
+-- GLOBALS: LibStub
 -- GLOBALS: UnitGUID
+
+local MooUnit = LibStub("MooUnit-1.0")
 
 -- Register prefixes and handlers for broadcast messages.
 local CONTROL_GAIN_V1_PREFIX = "LOC_BG"
@@ -26,7 +29,7 @@ local playerGUID = UnitGUID("player")
 
 function addon:OnBroadcastGainReceived(prefix, message, channel, sender)
 	if self.db.profile.alert.enable and self.db.profile.alert.regain
-			and sender ~= self:GetNameByGUID(playerGUID) then
+			and sender ~= MooUnit:GetNameByGUID(playerGUID) then
 		local ok, guid, role, duration
 		if prefix == CONTROL_GAIN_V1_PREFIX then
 			-- Version 1 "gain" messages have no duration.
@@ -53,7 +56,7 @@ function addon:OnBroadcastGainReceived(prefix, message, channel, sender)
 end
 
 function addon:OnBroadcastLossReceived(prefix, message, channel, sender)
-	if self.db.profile.alert.enable and sender ~= self:GetNameByGUID(playerGUID) then
+	if self.db.profile.alert.enable and sender ~= MooUnit:GetNameByGUID(playerGUID) then
 		local ok, guid, role, spellID, effect, remaining, duration
 		if prefix == CONTROL_LOST_V1_PREFIX then
 			-- Version 1 "gain" messages have no duration.
