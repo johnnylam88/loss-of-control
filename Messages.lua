@@ -153,7 +153,7 @@ do
 				local class = self:GetClassByGUID(guid)
 				local colorizedName = class and CreateClassColorName(name, class)
 				markerText = index and raidTargetIconText[index] or ""
-				nameText = colorizedName or ""
+				nameText = colorizedName or name
 				roleText = iconTextByRole[role]
 			end
 		end
