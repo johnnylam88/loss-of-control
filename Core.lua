@@ -228,6 +228,8 @@ do
 		[ 17307] = { "STUN", L["Stunned"] }, -- Knockout
 		[ 74720] = { "CONFUSE", L["Disoriented"] }, -- Pound
 		[149955] = { "STUN", L["Stunned"] }, -- Devouring Blackness
+		[150485] = { "ROOT", L["Rooted"] }, -- Web Wrap
+		[150486] = { "STUN", L["Stunned"] }, -- Web Wrap
 		[150634] = { "STUN", L["Stunned"] }, -- Leviathan's Grip
 	}
 
