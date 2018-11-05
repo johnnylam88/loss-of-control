@@ -226,6 +226,7 @@ do
 		[ 10730] = { "PACIFY", L["Pacified"] }, -- Pacify
 		[ 12890] = { "PACIFY", L["Invulnerable"] }, -- Deep Slumber
 		[ 17307] = { "STUN", L["Stunned"] }, -- Knockout
+		[ 48400] = { "STUN", L["Stunned"] }, -- Frost Tomb
 		[ 74720] = { "CONFUSE", L["Disoriented"] }, -- Pound
 		[149955] = { "STUN", L["Stunned"] }, -- Devouring Blackness
 		[150485] = { "ROOT", L["Rooted"] }, -- Web Wrap
