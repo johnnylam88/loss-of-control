@@ -225,6 +225,7 @@ do
 		[  3589] = { "SILENCE", L["Silenced"] }, -- Deafening Screech
 		[ 10730] = { "PACIFY", L["Pacified"] }, -- Pacify
 		[ 12890] = { "PACIFY", L["Invulnerable"] }, -- Deep Slumber
+		[ 17244] = { "CHARM", L["Charmed"] }, -- Possess
 		[ 17307] = { "STUN", L["Stunned"] }, -- Knockout
 		[ 22651] = { "STUN", L["Stunned"] }, -- Sacrifice
 		[ 48400] = { "STUN", L["Stunned"] }, -- Frost Tomb
