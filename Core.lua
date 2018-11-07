@@ -90,7 +90,8 @@ function addon:OnEnable()
 	self:Debug(3, "OnEnable")
 	self:RegisterChatCommand("loc", "ChatCommand")
 	self:RegisterEvent("LOSS_OF_CONTROL_UPDATE", "UpdateLossOfControl")
-	self:RegisterEvent("PLAYER_ENTERING_WORLD", "QueueRoleCheck")
+	self:RegisterEvent("PLAYER_ENTERING_WORLD")
+	self:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED", "UnitSpecializationChanged")
 	self:RegisterEvent("UNIT_AURA")
 	MooUnit.RegisterCallback(self, "MooUnit_UnitChanged", "UpdateClass")
 	MooUnit.RegisterCallback(self, "MooUnit_UnitJoined", "UpdateClass")
@@ -104,11 +105,22 @@ function addon:OnDisable()
 	self:UnregisterChatCommand("loc")
 	self:UnregisterEvent("LOSS_OF_CONTROL_UPDATE")
 	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
+	self:UnregisterEvent("PLAYER_SPECIALIZATION_CHANGED")
 	self:UnregisterEvent("UNIT_AURA")
 	MooUnit.UnregisterCallback(self, "MooUnit_UnitChanged")
 	MooUnit.UnregisterCallback(self, "MooUnit_UnitJoined")
 	MooUnit.UnregisterCallback(self, "MooUnit_UnitLeft")
 	MooZone.UnregisterCallback(self, "MooZone_ZoneChanged")
+end
+
+function addon:PLAYER_ENTERING_WORLD(event)
+	self:UnitSpecializationChanged(event, "player")
+end
+
+function addon:UnitSpecializationChanged(event, unit)
+	if unit == "player" then
+		self:QueueRoleCheck()
+	end
 end
 
 function addon:UNIT_AURA(event, unit)
