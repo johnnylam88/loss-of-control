@@ -227,6 +227,7 @@ do
 		[ 12890] = { "PACIFY", L["Invulnerable"] }, -- Deep Slumber
 		[ 17244] = { "CHARM", L["Charmed"] }, -- Possess
 		[ 17307] = { "STUN", L["Stunned"] }, -- Knockout
+		[ 22519] = { "STUN", L["Stunned"] }, -- Ice Nova
 		[ 22651] = { "STUN", L["Stunned"] }, -- Sacrifice
 		[ 48400] = { "STUN", L["Stunned"] }, -- Frost Tomb
 		[ 74720] = { "CONFUSE", L["Disoriented"] }, -- Pound
