@@ -88,7 +88,7 @@ function addon:BroadcastGain(guid, role, duration)
 	local prefix = CONTROL_GAIN_PREFIX
 	local channel = self:GetGroupChannelByZone(zone)
 	if channel then
-		local message = self:Serialize(guid, role)
+		local message = self:Serialize(guid, role, duration)
 		self:Debug(2, "SendCommMessage", prefix, guid, role, channel)
 		self:SendCommMessage(prefix, message, channel)
 	end
