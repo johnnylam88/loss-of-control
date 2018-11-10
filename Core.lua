@@ -26,6 +26,7 @@ local type = type
 local unpack = unpack
 -- GLOBALS: _G
 -- GLOBALS: GetAddOnMetadata
+-- GLOBALS: GetSchoolString
 -- GLOBALS: GetSpellLink
 -- GLOBALS: GetTime
 -- GLOBALS: InterfaceOptionsFrame_OpenToCategory
@@ -312,14 +313,29 @@ do
 		end
 	end
 
+	-- These values are from FrameXML/LossOfControlFrame.lua.
 	local DISPLAY_TYPE_NONE = 0
+	local TEXT_OVERRIDE = {
+		[ 33786] = L["Cycloned"],
+		[209753] = L["Cycloned"],
+	}
 
 	function addon:ScanEvents()
 		self:Debug(3, "ScanEvents")
 		locRemaining = nil
 		for index = 1, C_LossOfControl_GetNumEvents() do
-			local locType, spellID, text, _, _, timeRemaining, _, _, _, displayType = C_LossOfControl_GetEventInfo(index)
+			local locType, spellID, text, _, _, timeRemaining, _, school, _, displayType = C_LossOfControl_GetEventInfo(index)
 			if displayType ~= DISPLAY_TYPE_NONE and self:IsWatchedEvent(locType, spellID) then
+				if locType == "SCHOOL_INTERRUPT" then
+					-- Replace "Interrupted" with a school-specific lockout text, e.g., "Nature Locked", etc.
+					if school and school ~= 0 then
+						local schoolString = GetSchoolString(school)
+						text = format(L["%s Locked"], schoolString)
+					end
+				else
+					-- Override the text for the spell if the override exists.
+					text = TEXT_OVERRIDE[spellID] or text
+				end
 				self:AddEvent(spellID, text, timeRemaining)
 			end
 		end

@@ -57,3 +57,4 @@ L["Stunned"] = _G.LOSS_OF_CONTROL_DISPLAY_STUN
 L["Tank"] = _G.TANK
 L["World"] = MooZone:GetLocalizedZone("world")
 L["Yell"] = _G.YELL
+L["%s Locked"] = _G.LOSS_OF_CONTROL_DISPLAY_INTERRUPT_SCHOOL
