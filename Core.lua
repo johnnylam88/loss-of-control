@@ -312,12 +312,14 @@ do
 		end
 	end
 
+	local DISPLAY_TYPE_NONE = 0
+
 	function addon:ScanEvents()
 		self:Debug(3, "ScanEvents")
 		locRemaining = nil
 		for index = 1, C_LossOfControl_GetNumEvents() do
-			local locType, spellID, text, _, _, timeRemaining = C_LossOfControl_GetEventInfo(index)
-			if self:IsWatchedEvent(locType, spellID) then
+			local locType, spellID, text, _, _, timeRemaining, _, _, _, displayType = C_LossOfControl_GetEventInfo(index)
+			if displayType ~= DISPLAY_TYPE_NONE and self:IsWatchedEvent(locType, spellID) then
 				self:AddEvent(spellID, text, timeRemaining)
 			end
 		end
