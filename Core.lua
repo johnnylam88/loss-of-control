@@ -73,6 +73,7 @@ end
 -- Reference to the frame registered into the Interface Options panel.
 local settingsFrame
 
+local MooSpec = LibStub("MooSpec-1.0")
 local MooUnit = LibStub("MooUnit-1.0")
 local MooZone = LibStub("MooZone-1.0")
 
@@ -91,12 +92,11 @@ function addon:OnEnable()
 	self:Debug(3, "OnEnable")
 	self:RegisterChatCommand("loc", "ChatCommand")
 	self:RegisterEvent("LOSS_OF_CONTROL_UPDATE", "UpdateLossOfControl")
-	self:RegisterEvent("PLAYER_ENTERING_WORLD")
-	self:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED", "UnitSpecializationChanged")
 	self:RegisterEvent("UNIT_AURA")
+	MooSpec.RegisterCallback(self, "MooSpec_UnitRoleChanged", "OnUnitRoleChanged")
 	MooUnit.RegisterCallback(self, "MooUnit_UnitChanged", "UpdateClass")
 	MooUnit.RegisterCallback(self, "MooUnit_UnitJoined", "UpdateClass")
-	MooUnit.RegisterCallback(self, "MooUnit_UnitLeft")
+	MooUnit.RegisterCallback(self, "MooUnit_UnitLeft", "OnUnitLeft")
 	MooZone.RegisterCallback(self, "MooZone_ZoneChanged", "UpdateLossOfControl")
 	self:RegisterAllComm()
 end
@@ -105,28 +105,39 @@ function addon:OnDisable()
 	self:Debug(3, "OnDisable")
 	self:UnregisterChatCommand("loc")
 	self:UnregisterEvent("LOSS_OF_CONTROL_UPDATE")
-	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
-	self:UnregisterEvent("PLAYER_SPECIALIZATION_CHANGED")
 	self:UnregisterEvent("UNIT_AURA")
+	MooSpec.UnregisterCallback(self, "MooSpec_UnitRoleChanged")
 	MooUnit.UnregisterCallback(self, "MooUnit_UnitChanged")
 	MooUnit.UnregisterCallback(self, "MooUnit_UnitJoined")
 	MooUnit.UnregisterCallback(self, "MooUnit_UnitLeft")
 	MooZone.UnregisterCallback(self, "MooZone_ZoneChanged")
 end
 
-function addon:PLAYER_ENTERING_WORLD(event)
-	self:UnitSpecializationChanged(event, "player")
-end
-
-function addon:UnitSpecializationChanged(event, unit)
-	if unit == "player" then
-		self:QueueRoleCheck()
-	end
-end
-
 function addon:UNIT_AURA(event, unit)
 	if unit == "player" then
 		self:UpdateLossOfControl(event)
+	end
+end
+
+do
+	local playerGUID = UnitGUID("player")
+	local role = "damager" -- "tank", "healer", "damager"
+
+	function addon:GetRole()
+		return role
+	end
+
+	function addon:OnUnitRoleChanged(event, guid, unit, oldRole, newRole)
+		if guid == playerGUID then
+			if newRole == "melee" or newRole == "ranged" then
+				newRole = "damager"
+			end
+			if role ~= newRole then
+				self:Debug(2, "OnUnitRoleChanged", role, newRole)
+				role = newRole
+				self:UpdateLossOfControl(event)
+			end
+		end
 	end
 end
 
@@ -138,13 +149,15 @@ do
 	end
 
 	function addon:UpdateClass(event, guid, unit)
+		self:Debug(3, "UpdateClass", event, guid, unit)
 		local _, class = UnitClass(unit)
 		if class then
 			classByGUID[guid] = class
+			self:Debug(2, "UpdateClass", guid, unit, class)
 		end
 	end
 
-	function addon:MooUnit_UnitLeft(event, guid)
+	function addon:OnUnitLeft(event, guid)
 		classByGUID[guid] = nil
 	end
 end
@@ -367,6 +380,7 @@ do
 		local role = self:GetRole()
 		local zone = MooZone:GetZone()
 		return (self.db.profile.announce.enable
+			and self.db.profile.announce[role]
 			and self.db.profile.announce[role].enable
 			and self.db.profile.announce.zone[zone]
 			and (IsInGroup() or self.db.profile.announce.solo))

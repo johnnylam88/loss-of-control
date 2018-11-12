@@ -146,7 +146,7 @@ local options = {
 			end,
 			set = function(info, value)
 				addon.db.profile.announce[info[#info]] = value
-				addon:UpdateLossOfControl()
+				addon:UpdateLossOfControl("options: announce")
 			end,
 			args = {
 				desc = {
@@ -172,7 +172,7 @@ local options = {
 					end,
 					set = function(info, value)
 						addon.db.profile.announce.zone[info[#info]] = value
-						addon:UpdateLossOfControl()
+						addon:UpdateLossOfControl("options: zones")
 					end,
 					args = {
 						world = {
@@ -281,7 +281,7 @@ local options = {
 					end,
 					set = function(info, value)
 						addon.db.profile.announce.tank[info[#info]] = value
-						addon:UpdateLossOfControl()
+						addon:UpdateLossOfControl("options: tank")
 					end,
 					args = {
 						desc = {
@@ -317,7 +317,7 @@ local options = {
 					end,
 					set = function(info, value)
 						addon.db.profile.announce.healer[info[#info]] = value
-						addon:UpdateLossOfControl()
+						addon:UpdateLossOfControl("options: healer")
 					end,
 					args = {
 						desc = {
@@ -353,7 +353,7 @@ local options = {
 					end,
 					set = function(info, value)
 						addon.db.profile.announce.damager[info[#info]] = value
-						addon:UpdateLossOfControl()
+						addon:UpdateLossOfControl("options: damager")
 					end,
 					args = {
 						desc = {
