@@ -10,7 +10,8 @@
 ## X-Curse-Project-ID: 304716
 ## X-WoWI-ID: 24840
 
-## OptionalDeps: Ace3, MooZone-1.0
+## X-Embeds: Ace3, MooInspect-1.0, MooSpec-1.0, MooUnit-1.0, MooZone-1.0
+## OptionalDeps: Ace3, MooInspect-1.0, MooSpec-1.0, MooUnit-1.0, MooZone-1.0
 ## SavedVariables: LossOfControlDB
 
 embeds.xml

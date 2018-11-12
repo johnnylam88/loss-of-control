@@ -21,5 +21,7 @@ externals:
     Libs/LibStub: 
         url: https://repos.wowace.com/wow/libstub/trunk
         tag: 1.0
+    Libs/MooInspect-1.0: https://github.com/ultijlam/mooinspect-1-0
+    Libs/MooSpec-1.0: https://github.com/ultijlam/moospec-1-0
     Libs/MooUnit-1.0: https://github.com/ultijlam/moounit-1-0
     Libs/MooZone-1.0: https://github.com/ultijlam/moozone-1-0

@@ -15,4 +15,6 @@
 	<Include file="Libs\AceConfigDialog-3.0\AceConfigDialog-3.0.xml" />
 	<Include file="Libs\MooUnit-1.0\MooUnit-1.0.xml" />
 	<Include file="Libs\MooZone-1.0\MooZone-1.0.xml" />
+	<Include file="Libs\MooInspect-1.0\MooInspect-1.0.xml" />
+	<Include file="Libs\MooSpec-1.0\MooSpec-1.0.xml" />
 </Ui>
