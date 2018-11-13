@@ -363,8 +363,9 @@ do
 			local t = locAura[spellID]
 			if t then
 				local locType, text = unpack(t)
+				local timeRemaining = expirationTime - now
 				if locType and self:IsWatchedEvent(locType, spellID) then
-					self:AddEvent(spellID, text, expirationTime - now)
+					self:AddEvent(spellID, text, timeRemaining)
 				end
 			end
 		end
