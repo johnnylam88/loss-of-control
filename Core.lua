@@ -35,6 +35,7 @@ local unpack = unpack
 -- GLOBALS: UnitClass
 -- GLOBALS: UnitDebuff
 -- GLOBALS: UnitGUID
+-- GLOBALS: UnitIsPlayer
 local C_LossOfControl = C_LossOfControl
 local C_LossOfControl_GetEventInfo = C_LossOfControl.GetEventInfo
 local C_LossOfControl_GetNumEvents = C_LossOfControl.GetNumEvents
@@ -149,11 +150,14 @@ do
 	end
 
 	function addon:UpdateClass(event, guid, unit)
-		self:Debug(3, "UpdateClass", event, guid, unit)
-		local _, class = UnitClass(unit)
-		if class then
-			classByGUID[guid] = class
-			self:Debug(2, "UpdateClass", guid, unit, class)
+		if MooUnit:UnitInGroup(guid) and UnitIsPlayer(unit) then
+			self:Debug(3, "UpdateClass", event, guid, unit)
+			local oldClass = classByGUID[guid]
+			local _, class = UnitClass(unit)
+			if class and oldClass ~= class then
+				classByGUID[guid] = class
+				self:Debug(2, "UpdateClass", guid, unit, class)
+			end
 		end
 	end
 
