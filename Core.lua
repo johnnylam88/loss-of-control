@@ -307,24 +307,24 @@ do
 	-- We track only the Loss of Control event with the longest remaining duration.
 	-- Time at which the Loss of Control occurred.
 	local locStart
-	-- Remaining time for the Loss Of Control event.
-	local locRemaining
+	-- Expiration time for the Loss Of Control event.
+	local locExpiration
 	-- ID of spell that triggered the Loss Of Control event.
 	local locSpellID
 	-- Descriptive text of effect caused by the Loss Of Control event.
 	local locEffect
 
 	function addon:GetStartTime() return locStart end
-	function addon:GetRemainingTime() return locRemaining end
+	function addon:GetExpirationTime() return locExpiration end
 	function addon:GetSpellID() return locSpellID end
 	function addon:GetEffect() return locEffect end
 
 	function addon:SetStartTime(start) locStart = start end
 
-	function addon:AddEvent(spellID, text, timeRemaining)
-		self:Debug(2, "AddEvent", spellID, text, timeRemaining)
-		if not locRemaining or locRemaining < timeRemaining then
-			locRemaining = timeRemaining
+	function addon:AddEvent(spellID, text, expirationTime)
+		if not locExpiration or locExpiration < expirationTime then
+			self:Debug(2, "AddEvent", spellID, text, expirationTime)
+			locExpiration = expirationTime
 			locSpellID = spellID
 			locEffect = text
 		end
@@ -339,33 +339,34 @@ do
 
 	function addon:ScanEvents()
 		self:Debug(3, "ScanEvents")
-		locRemaining = nil
+		locExpiration = nil
 		for index = 1, C_LossOfControl_GetNumEvents() do
-			local locType, spellID, text, _, _, timeRemaining, _, school, _, displayType = C_LossOfControl_GetEventInfo(index)
-			if displayType ~= DISPLAY_TYPE_NONE and self:IsWatchedEvent(locType, spellID) then
-				if locType == "SCHOOL_INTERRUPT" then
-					-- Replace "Interrupted" with a school-specific lockout text, e.g., "Nature Locked", etc.
-					if school and school ~= 0 then
-						local schoolString = GetSchoolString(school)
-						text = format(L["%s Locked"], schoolString)
+			local locType, spellID, text, _, startTime, timeRemaining, _, school, _, displayType = C_LossOfControl_GetEventInfo(index)
+			if startTime and timeRemaining then
+				local expirationTime = startTime + timeRemaining
+				if displayType ~= DISPLAY_TYPE_NONE and self:IsWatchedEvent(locType, spellID) then
+					if locType == "SCHOOL_INTERRUPT" then
+						-- Replace "Interrupted" with a school-specific lockout text, e.g., "Nature Locked", etc.
+						if school and school ~= 0 then
+							local schoolString = GetSchoolString(school)
+							text = format(L["%s Locked"], schoolString)
+						end
+					else
+						-- Override the text for the spell if the override exists.
+						text = TEXT_OVERRIDE[spellID] or text
 					end
-				else
-					-- Override the text for the spell if the override exists.
-					text = TEXT_OVERRIDE[spellID] or text
+					self:AddEvent(spellID, text, expirationTime)
 				end
-				self:AddEvent(spellID, text, timeRemaining)
 			end
 		end
-		local now = GetTime()
 		for index = 1, 40 do
 			local name, _, _, _, _, expirationTime, _, _, _, spellID = UnitDebuff("player", index)
 			if not name then break end
 			local t = locAura[spellID]
 			if t then
 				local locType, text = unpack(t)
-				local timeRemaining = expirationTime - now
 				if locType and self:IsWatchedEvent(locType, spellID) then
-					self:AddEvent(spellID, text, timeRemaining)
+					self:AddEvent(spellID, text, expirationTime)
 				end
 			end
 		end
@@ -422,7 +423,8 @@ do
 			start = now
 			self:SetStartTime(now)
 		end
-		local remaining = self:GetRemainingTime()
+		local expirationTime = self:GetExpirationTime()
+		local remaining = expirationTime - now
 		-- Round duration of Loss Of Control to tenths of a second.
 		local duration = round(now + remaining - start, 1)
 		if duration > self.db.profile.announce.threshold then
@@ -446,9 +448,9 @@ end
 
 function addon:UpdateLossOfControl(event)
 	self:Debug(3, "UpdateLossOfControl", event)
-	local old = self:GetRemainingTime()
+	local old = self:GetExpirationTime()
 	self:ScanEvents()
-	local current = self:GetRemainingTime()
+	local current = self:GetExpirationTime()
 	if current and (not old or old < current) then
 		self:PlayerControlLost()
 	elseif old and not current then
