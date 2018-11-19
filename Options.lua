@@ -24,6 +24,8 @@ local defaultDB = {
 				lfg_dungeon = true,
 			},
 			output = "emote", -- Use emotes (least intrusive option).
+			chat = true, -- Announce in chat window.
+			raidWarning = true, -- Announce as raid warning message.
 			threshold = 1.5, -- Only announce for events lasting longer than 1.5 seconds.
 			regain = false, -- Don't announce when player control is regained.
 			regainThreshold = 5, -- Only announce player regaining control after Loss Of Control lasting longer than 5 seconds.
@@ -236,6 +238,20 @@ local options = {
 						say = L["Say"],
 						yell = L["Yell"],
 					},
+				},
+				chat = {
+					name = L["Announce in local chat window."],
+					desc = L["Enable showing announcements in the local chat window."],
+					type = "toggle",
+					order = 25,
+					width = "full",
+				},
+				raidWarning = {
+					name = L["Announce in raid warning area."],
+					desc = L["Enable showing announcements in the raid warning message area."],
+					type = "toggle",
+					order = 27,
+					width = "full",
 				},
 				threshold = {
 					name = L["Minimum loss duration"],

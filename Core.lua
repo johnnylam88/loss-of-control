@@ -409,7 +409,12 @@ do
 				end
 			end
 			local localMessage = self:CreateGainMessage("local", guid, role)
-			self:SendLocalMessage(localMessage)
+			if self.db.profile.announce.raidWarning then
+				self:SendEmphasizedMessage(localMessage)
+			end
+			if self.db.profile.announce.chat then
+				self:SendLocalMessage(localMessage)
+			end
 		end
 		-- Always broadcast and allow the receiver to decide whether to use the information.
 		self:BroadcastGain(guid, role, duration) -- from Broadcast.lua
@@ -440,7 +445,12 @@ do
 				end
 			end
 			local localMessage = self:CreateLossMessage("local", guid, role, spellID, effect, remainingRounded)
-			self:SendLocalMessage(localMessage)
+			if self.db.profile.announce.raidWarning then
+				self:SendEmphasizedMessage(localMessage)
+			end
+			if self.db.profile.announce.chat then
+				self:SendLocalMessage(localMessage)
+			end
 			self:BroadcastLoss(guid, role, spellID, effect, remainingRounded, duration) -- from Broadcast.lua
 		end
 	end
