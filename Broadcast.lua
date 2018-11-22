@@ -33,13 +33,12 @@ function addon:OnBroadcastGainReceived(prefix, message, channel, sender)
 			and sender ~= MooUnit:GetNameByGUID(playerGUID) then
 		local ok, guid, role, duration
 		if prefix == CONTROL_GAIN_V1_PREFIX then
-			-- Version 1 "gain" messages have no duration.
 			ok, guid, role = self:Deserialize(message)
-			duration = 3 -- pretend the Loss Of Control duration is 3 seconds
 		else
 			ok, guid, role, duration = self:Deserialize(message)
 		end
 		if ok then
+			duration = duration or 3 -- default duration for V1 messages.
 			if duration >= self.db.profile.alert.regainThreshold then
 				local msg = self:CreateGainMessage("local", guid, role)
 				if self.db.profile.alert.raidWarning then
@@ -60,13 +59,12 @@ function addon:OnBroadcastLossReceived(prefix, message, channel, sender)
 	if self.db.profile.alert.enable and sender ~= MooUnit:GetNameByGUID(playerGUID) then
 		local ok, guid, role, spellID, effect, remaining, duration
 		if prefix == CONTROL_LOST_V1_PREFIX then
-			-- Version 1 "gain" messages have no duration.
 			ok, guid, role, spellID, effect, remaining = self:Deserialize(message)
-			duration = 3 -- pretend the Loss Of Control duration is 3 seconds
 		else
 			ok, guid, role, spellID, effect, remaining, duration = self:Deserialize(message)
 		end
 		if ok then
+			duration = duration or 3 -- default duration for V1 messages.
 			if duration >= self.db.profile.alert.threshold then
 				local msg = self:CreateLossMessage("local", guid, role, spellID, effect, remaining)
 				if self.db.profile.alert.raidWarning then
