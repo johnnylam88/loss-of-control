@@ -266,6 +266,7 @@ do
 	local locAura = {
 		[  3589] = { "SILENCE", L["Silenced"] }, -- Deafening Screech
 		[ 10730] = { "PACIFY", L["Pacified"] }, -- Pacify
+		[ 12480] = { "CHARM", L["Charmed"] }, -- Hex of Jammal'an
 		[ 12890] = { "PACIFY", L["Invulnerable"] }, -- Deep Slumber
 		[ 17244] = { "CHARM", L["Charmed"] }, -- Possess
 		[ 17307] = { "STUN", L["Stunned"] }, -- Knockout
