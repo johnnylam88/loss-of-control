@@ -244,7 +244,7 @@ end
 
 do
 	-- Map "locType" (first return value of C_LossOfControl.GetEventInfo()) to option name.
-	local locOption = {
+	local LOC_OPTION = {
 		CHARM = "charm",
 		CONFUSE = "confuse",
 		DISARM = "disarm",
@@ -263,7 +263,29 @@ do
 		STUN_MECHANIC = "stun",
 	}
 
-	local locAura = {
+	-- Set priorities for Loss Of Control events based on their severity for healers.
+	local LOC_PRIORITY = {
+		-- Can move and cast spells.
+		DISARM = 10,
+		-- Cannot move, can cast spells.
+		ROOT = 20,
+		-- Can move, cannot cast spells.
+		SCHOOL_INTERRUPT = 30,
+		SILENCE = 30,
+		-- Cannot move, cannot cast spells.
+		CHARM = 40,
+		CONFUSE = 40,
+		FEAR = 40,
+		FEAR_MECHANIC = 40,
+		PACIFY = 40,
+		PACIFYSILENCE = 40,
+		POSSESS = 40,
+		STUN = 40,
+		STUN_MECHANIC = 40,
+	}
+
+	-- Auras that cause Loss Of Control but are not treated as such by the game.
+	local LOC_AURA = {
 		[  3589] = { "SILENCE", L["Silenced"] }, -- Deafening Screech
 		[ 10730] = { "PACIFY", L["Pacified"] }, -- Pacify
 		[ 12480] = { "CHARM", L["Charmed"] }, -- Hex of Jammal'an
@@ -283,7 +305,7 @@ do
 
 	function addon:IsWatchedEvent(locType, spellID)
 		local role = self:GetRole()
-		local option = locOption[locType]
+		local option = LOC_OPTION[locType]
 		local watched
 		if not option then
 			local link = spellID and GetSpellLink(spellID)
@@ -306,29 +328,56 @@ do
 		return watched
 	end
 
-	-- We track only the Loss of Control event with the longest remaining duration.
-	-- Time at which the Loss of Control occurred.
-	local locStart
-	-- Expiration time for the Loss Of Control event.
-	local locExpiration
-	-- ID of spell that triggered the Loss Of Control event.
-	local locSpellID
-	-- Descriptive text of effect caused by the Loss Of Control event.
-	local locEffect
+	-- We track the highest priority Loss of Control event with the latest expiration time.
+	local locStart      -- Time at which the Loss of Control began.
+	local locDuration   -- Total duration of the Loss of Control.
+	local locExpiration -- Expiration time for the Loss Of Control event.
+	local locSpellID    -- ID of spell that triggered the Loss Of Control event.
+	local locEffect     -- Descriptive text of effect caused by the Loss Of Control event.
+	local locPriority   -- Priority of the Loss Of Control event.
 
 	function addon:GetStartTime() return locStart end
 	function addon:GetExpirationTime() return locExpiration end
+	function addon:GetDuration() return locDuration end
 	function addon:GetSpellID() return locSpellID end
 	function addon:GetEffect() return locEffect end
 
-	function addon:SetStartTime(start) locStart = start end
+	function addon:ResetLossOfControl()
+		locStart = nil
+		locDuration = nil
+		locExpiration = nil
+		locSpellID = nil
+		locEffect = nil
+		locPriority = nil
+	end
 
-	function addon:AddEvent(spellID, text, expirationTime)
-		if not locExpiration or locExpiration < expirationTime then
-			self:Debug(2, "AddEvent", spellID, text, expirationTime)
-			locExpiration = expirationTime
+	function addon:AddEvent(spellID, text, priority, duration, expirationTime)
+		if not locPriority or locPriority <= priority then
+			local changed = false
+			local start = expirationTime - duration
+			if not locPriority or locPriority < priority then
+				locStart = start
+				locExpiration = expirationTime
+				changed = true
+			else -- if locPriority == priority then
+				-- Keep the earliest start time.
+				if not locStart or locStart > start then
+					locStart = start
+					changed = true
+				end
+				-- Keep the latest expiration time.
+				if not locExpiration or locExpiration < expirationTime then
+					locExpiration = expirationTime
+					changed = true
+				end
+			end
+			if changed then
+				self:Debug(2, "AddEvent", spellID, text, priority, duration, expirationTime)
+			end
+			locDuration = locExpiration - locStart
 			locSpellID = spellID
 			locEffect = text
+			locPriority = priority
 		end
 	end
 
@@ -356,22 +405,25 @@ do
 						-- Override the text for the spell if the override exists.
 						text = TEXT_OVERRIDE[spellID] or text
 					end
+					local priority = LOC_PRIORITY[locType]
 					local expirationTime = startTime + duration
-					self:AddEvent(spellID, text, expirationTime)
+					self:AddEvent(spellID, text, priority, duration, expirationTime)
 				end
 			end
 		end
 		for index = 1, 40 do
-			local name, _, _, _, _, expirationTime, _, _, _, spellID = UnitDebuff("player", index)
+			local name, _, _, _, duration, expirationTime, _, _, _, spellID = UnitDebuff("player", index)
 			if not name then break end
-			local t = locAura[spellID]
+			local t = LOC_AURA[spellID]
 			if t then
 				local locType, text = unpack(t)
 				if locType and self:IsWatchedEvent(locType, spellID) then
-					self:AddEvent(spellID, text, expirationTime)
+					local priority = LOC_PRIORITY[locType]
+					self:AddEvent(spellID, text, priority, duration, expirationTime)
 				end
 			end
 		end
+		-- postcondition: locExpiration is nil if there are no Loss Of Control events.
 	end
 end
 
@@ -397,11 +449,11 @@ do
 	function addon:PlayerControlGained()
 		self:Debug(2, "PlayerControlGained")
 		local role = self:GetRole()
-		local now = GetTime()
-		local start = self:GetStartTime()
-		-- Round duration of Loss Of Control to tenths of a second.
-		local duration = (now and start) and round(now - start, 1) or 0
-		self:SetStartTime() -- reset the start time
+		local duration = self:GetDuration()
+		self:ResetLossOfControl()
+
+		-- Round the duration of Loss Of Control to tenths of a second.
+		duration = round(duration, 1)
 		if self.db.profile.announce.regain and duration >= self.db.profile.announce.regainThreshold then
 			if self:IsAnnounceEnabled() then
 				local channel, msgType = self:GetOutputChannel()
@@ -418,6 +470,7 @@ do
 				self:SendLocalMessage(localMessage)
 			end
 		end
+
 		-- Always broadcast and allow the receiver to decide whether to use the information.
 		self:BroadcastGain(guid, role, duration) -- from Broadcast.lua
 	end
@@ -426,19 +479,20 @@ do
 		self:Debug(2, "PlayerControlLost")
 
 		local role = self:GetRole()
+		local expirationTime = self:GetExpirationTime()
+		local duration = self:GetDuration()
 		local spellID = self:GetSpellID()
 		local effect = self:GetEffect()
 
+		-- Round time remaining and duration of Loss Of Control to tenths of a second.
 		local now = GetTime()
 		local start = self:GetStartTime()
-		if not start then
-			start = now
-			self:SetStartTime(now)
+		-- Sanity check!
+		if now < start then
+			now = start
 		end
-		local expirationTime = self:GetExpirationTime()
-		-- Round duration and time remaining of Loss Of Control to tenths of a second.
-		local duration = round(expirationTime - start, 1)
 		local remaining = round(expirationTime - now, 1)
+		duration = round(duration, 1)
 
 		if duration > self.db.profile.announce.threshold then
 			if self:IsAnnounceEnabled() then
@@ -456,6 +510,7 @@ do
 				self:SendLocalMessage(localMessage)
 			end
 		end
+
 		-- Always broadcast and allow the receiver to decide whether to use the information.
 		self:BroadcastLoss(guid, role, spellID, effect, remaining, duration) -- from Broadcast.lua
 	end
