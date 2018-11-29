@@ -343,9 +343,8 @@ do
 		self:Debug(3, "ScanEvents")
 		locExpiration = nil
 		for index = 1, C_LossOfControl_GetNumEvents() do
-			local locType, spellID, text, _, startTime, timeRemaining, _, school, _, displayType = C_LossOfControl_GetEventInfo(index)
-			if startTime and timeRemaining then
-				local expirationTime = startTime + timeRemaining
+			local locType, spellID, text, _, startTime, _, duration, school, _, displayType = C_LossOfControl_GetEventInfo(index)
+			if locType and spellID and text and startTime and duration and school and displayType then
 				if displayType ~= DISPLAY_TYPE_NONE and self:IsWatchedEvent(locType, spellID) then
 					if locType == "SCHOOL_INTERRUPT" then
 						-- Replace "Interrupted" with a school-specific lockout text, e.g., "Nature Locked", etc.
@@ -357,6 +356,7 @@ do
 						-- Override the text for the spell if the override exists.
 						text = TEXT_OVERRIDE[spellID] or text
 					end
+					local expirationTime = startTime + duration
 					self:AddEvent(spellID, text, expirationTime)
 				end
 			end
@@ -463,7 +463,7 @@ function addon:UpdateLossOfControl(event)
 	local old = self:GetExpirationTime()
 	self:ScanEvents()
 	local current = self:GetExpirationTime()
-	if current and (not old or old < current) then
+	if current and (not old or current > old) then
 		self:PlayerControlLost()
 	elseif old and not current then
 		self:PlayerControlGained()
