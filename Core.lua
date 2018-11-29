@@ -122,10 +122,10 @@ end
 
 do
 	local playerGUID = UnitGUID("player")
-	local role = "damager" -- "tank", "healer", "damager"
+	local playerRole = "damager" -- "tank", "healer", "damager"
 
 	function addon:GetRole()
-		return role
+		return playerRole
 	end
 
 	function addon:OnUnitRoleChanged(event, guid, unit, oldRole, newRole)
@@ -133,9 +133,9 @@ do
 			if newRole == "melee" or newRole == "ranged" then
 				newRole = "damager"
 			end
-			if role ~= newRole then
-				self:Debug(2, "OnUnitRoleChanged", role, newRole)
-				role = newRole
+			if playerRole ~= newRole then
+				self:Debug(2, "OnUnitRoleChanged", playerRole, newRole)
+				playerRole = newRole
 				self:UpdateLossOfControl(event)
 			end
 		end
