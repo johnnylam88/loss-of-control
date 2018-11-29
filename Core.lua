@@ -424,6 +424,11 @@ do
 
 	function addon:PlayerControlLost()
 		self:Debug(2, "PlayerControlLost")
+
+		local role = self:GetRole()
+		local spellID = self:GetSpellID()
+		local effect = self:GetEffect()
+
 		local now = GetTime()
 		local start = self:GetStartTime()
 		if not start then
@@ -431,30 +436,28 @@ do
 			self:SetStartTime(now)
 		end
 		local expirationTime = self:GetExpirationTime()
-		local remaining = expirationTime - now
-		-- Round duration of Loss Of Control to tenths of a second.
-		local duration = round(now + remaining - start, 1)
+		-- Round duration and time remaining of Loss Of Control to tenths of a second.
+		local duration = round(expirationTime - start, 1)
+		local remaining = round(expirationTime - now, 1)
+
 		if duration > self.db.profile.announce.threshold then
-			local role = self:GetRole()
-			local spellID = self:GetSpellID()
-			local effect = self:GetEffect()
-			local remainingRounded = round(remaining, 1)
 			if self:IsAnnounceEnabled() then
 				local channel, msgType = self:GetOutputChannel()
 				if channel and msgType then
-					local chatMessage = self:CreateLossMessage(msgType, guid, role, spellID, effect, remainingRounded)
+					local chatMessage = self:CreateLossMessage(msgType, guid, role, spellID, effect, remaining)
 					self:SendChatMessage(chatMessage, channel)
 				end
 			end
-			local localMessage = self:CreateLossMessage("local", guid, role, spellID, effect, remainingRounded)
+			local localMessage = self:CreateLossMessage("local", guid, role, spellID, effect, remaining)
 			if self.db.profile.announce.raidWarning then
 				self:SendEmphasizedMessage(localMessage)
 			end
 			if self.db.profile.announce.chat then
 				self:SendLocalMessage(localMessage)
 			end
-			self:BroadcastLoss(guid, role, spellID, effect, remainingRounded, duration) -- from Broadcast.lua
 		end
+		-- Always broadcast and allow the receiver to decide whether to use the information.
+		self:BroadcastLoss(guid, role, spellID, effect, remaining, duration) -- from Broadcast.lua
 	end
 end
 
