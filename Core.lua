@@ -127,7 +127,7 @@ do
 				newRole = "damager"
 			end
 			if playerRole ~= newRole then
-				self:Debug(2, "OnUnitRoleChanged", playerRole, newRole)
+				self:Debug(2, "Player role changed:", playerRole, newRole)
 				playerRole = newRole
 				self:UpdateLossOfControl(event)
 			end
