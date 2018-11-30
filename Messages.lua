@@ -21,6 +21,7 @@ local DEFAULT_CHAT_FRAME = DEFAULT_CHAT_FRAME -- Interface/FrameXML/ChatFrame.lu
 local ChatTypeInfo = ChatTypeInfo -- Interface/FrameXML/ChatFrame.lua
 local RaidWarningFrame = RaidWarningFrame -- Interface/FrameXML/RaidWarningFrame.xml
 
+local MooSpec = LibStub("MooSpec-1.0")
 local MooUnit = LibStub("MooUnit-1.0")
 local MooZone = LibStub("MooZone-1.0")
 
@@ -150,7 +151,7 @@ do
 				markerText = index and (raidTargetChatString[index] .. " ") or ""
 			elseif msgType == "local" then
 				-- local frames via :AddMessage()
-				local class = self:GetClassByGUID(guid)
+				local class = MooSpec:GetClass(guid)
 				local colorizedName = class and CreateClassColorName(name, class)
 				markerText = index and raidTargetIconText[index] or ""
 				nameText = colorizedName or name

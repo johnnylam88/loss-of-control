@@ -32,7 +32,6 @@ local unpack = unpack
 -- GLOBALS: InterfaceOptionsFrame_OpenToCategory
 -- GLOBALS: IsInGroup
 -- GLOBALS: LibStub
--- GLOBALS: UnitClass
 -- GLOBALS: UnitDebuff
 -- GLOBALS: UnitGUID
 -- GLOBALS: UnitIsPlayer
@@ -95,9 +94,6 @@ function addon:OnEnable()
 	self:RegisterEvent("LOSS_OF_CONTROL_UPDATE", "UpdateLossOfControl")
 	self:RegisterEvent("UNIT_AURA")
 	MooSpec.RegisterCallback(self, "MooSpec_UnitRoleChanged", "OnUnitRoleChanged")
-	MooUnit.RegisterCallback(self, "MooUnit_UnitChanged", "UpdateClass")
-	MooUnit.RegisterCallback(self, "MooUnit_UnitJoined", "UpdateClass")
-	MooUnit.RegisterCallback(self, "MooUnit_UnitLeft", "OnUnitLeft")
 	MooZone.RegisterCallback(self, "MooZone_ZoneChanged", "UpdateLossOfControl")
 	self:RegisterAllComm()
 end
@@ -108,9 +104,6 @@ function addon:OnDisable()
 	self:UnregisterEvent("LOSS_OF_CONTROL_UPDATE")
 	self:UnregisterEvent("UNIT_AURA")
 	MooSpec.UnregisterCallback(self, "MooSpec_UnitRoleChanged")
-	MooUnit.UnregisterCallback(self, "MooUnit_UnitChanged")
-	MooUnit.UnregisterCallback(self, "MooUnit_UnitJoined")
-	MooUnit.UnregisterCallback(self, "MooUnit_UnitLeft")
 	MooZone.UnregisterCallback(self, "MooZone_ZoneChanged")
 end
 
@@ -139,30 +132,6 @@ do
 				self:UpdateLossOfControl(event)
 			end
 		end
-	end
-end
-
-do
-	local classByGUID = {}
-
-	function addon:GetClassByGUID(guid)
-		return classByGUID[guid]
-	end
-
-	function addon:UpdateClass(event, guid, unit)
-		if MooUnit:UnitInGroup(guid) and UnitIsPlayer(unit) then
-			self:Debug(3, "UpdateClass", event, guid, unit)
-			local oldClass = classByGUID[guid]
-			local _, class = UnitClass(unit)
-			if class and oldClass ~= class then
-				classByGUID[guid] = class
-				self:Debug(2, "UpdateClass", guid, unit, class)
-			end
-		end
-	end
-
-	function addon:OnUnitLeft(event, guid)
-		classByGUID[guid] = nil
 	end
 end
 
