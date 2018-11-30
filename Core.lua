@@ -92,7 +92,7 @@ function addon:OnEnable()
 	self:Debug(3, "OnEnable")
 	self:RegisterChatCommand("loc", "ChatCommand")
 	self:RegisterEvent("LOSS_OF_CONTROL_UPDATE", "UpdateLossOfControl")
-	self:RegisterEvent("UNIT_AURA")
+	self:RegisterEvent("UNIT_AURA", "OnUnitAura")
 	MooSpec.RegisterCallback(self, "MooSpec_UnitRoleChanged", "OnUnitRoleChanged")
 	MooZone.RegisterCallback(self, "MooZone_ZoneChanged", "UpdateLossOfControl")
 	self:RegisterAllComm()
@@ -107,7 +107,7 @@ function addon:OnDisable()
 	MooZone.UnregisterCallback(self, "MooZone_ZoneChanged")
 end
 
-function addon:UNIT_AURA(event, unit)
+function addon:OnUnitAura(event, unit)
 	if unit == "player" then
 		self:UpdateLossOfControl(event)
 	end
