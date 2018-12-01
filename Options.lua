@@ -131,6 +131,14 @@ local eventOptions = {
 	},
 }
 
+local function IsAnnounceDisabled()
+	return not addon.db.profile.announce.enable
+end
+
+local function IsAlertDisabled()
+	return not addon.db.profile.alert.enable
+end
+
 local options = {
 	name = GetAddOnMetadata(ADDON_NAME, "Title"),
 	type = "group",
@@ -140,9 +148,6 @@ local options = {
 			desc = L["Manage how announcements are made."],
 			type = "group",
 			order = 10,
-			disabled = function()
-				return not addon.db.profile.announce.enable
-			end,
 			get = function(info)
 				return addon.db.profile.announce[info[#info]]
 			end,
@@ -169,6 +174,7 @@ local options = {
 					type = "group",
 					order = 10,
 					inline = true,
+					disabled = IsAnnounceDisabled,
 					get = function(info)
 						return addon.db.profile.announce.zone[info[#info]]
 					end,
@@ -232,6 +238,7 @@ local options = {
 					desc = L["Set the channel to where announcements are sent."],
 					type = "select",
 					order = 20,
+					disabled = IsAnnounceDisabled,
 					values = {
 						emote = L["Emote"],
 						group = L["Group"],
@@ -244,6 +251,7 @@ local options = {
 					desc = L["Enable showing announcements in the local chat window."],
 					type = "toggle",
 					order = 25,
+					disabled = IsAnnounceDisabled,
 					width = "full",
 				},
 				raidWarning = {
@@ -251,6 +259,7 @@ local options = {
 					desc = L["Enable showing announcements in the raid warning message area."],
 					type = "toggle",
 					order = 27,
+					disabled = IsAnnounceDisabled,
 					width = "full",
 				},
 				threshold = {
@@ -258,6 +267,7 @@ local options = {
 					desc = L["Only alert when the player is affected by a Loss Of Control event if the duration exceeds a minimum number of seconds."],
 					type = "range",
 					order = 30,
+					disabled = IsAnnounceDisabled,
 					min = 0,
 					max = 10,
 					step = 0.1,
@@ -267,6 +277,7 @@ local options = {
 					desc = L["Enable announcing when the player regains control."],
 					type = "toggle",
 					order = 40,
+					disabled = IsAnnounceDisabled,
 					width = "full",
 				},
 				regainThreshold = {
@@ -274,24 +285,26 @@ local options = {
 					desc = L["Only announce when the player regains control if the duration of the Loss Of Control exceeds a minimum number of seconds."],
 					type = "range",
 					order = 45,
+					disabled = function()
+						return IsAnnounceDisabled() or not addon.db.profile.announce.regain
+					end,
 					min = 0,
 					max = 15,
 					step = 0.1,
-					disabled = function()
-						return not (addon.db.profile.announce.enable and addon.db.profile.announce.regain)
-					end,
 				},
 				solo = {
 					name = L["Announce while solo"],
 					desc = L["Enable announcements even if the player is not a group."],
 					type = "toggle",
 					order = 50,
+					disabled = IsAnnounceDisabled,
 					width = "full",
 				},
 				tank = {
 					name = L["Tank"],
 					type = "group",
 					order = 10,
+					disabled = IsAnnounceDisabled,
 					get = function(info)
 						return addon.db.profile.announce.tank[info[#info]]
 					end,
@@ -318,7 +331,7 @@ local options = {
 							order = 20,
 							inline = true,
 							disabled = function()
-								return not addon.db.profile.announce.tank.enable
+								return IsAnnounceDisabled() or not addon.db.profile.announce.tank.enable
 							end,
 							args = eventOptions,
 						},
@@ -328,6 +341,7 @@ local options = {
 					name = L["Healer"],
 					type = "group",
 					order = 20,
+					disabled = IsAnnounceDisabled,
 					get = function(info)
 						return addon.db.profile.announce.healer[info[#info]]
 					end,
@@ -354,7 +368,7 @@ local options = {
 							order = 20,
 							inline = true,
 							disabled = function()
-								return not addon.db.profile.announce.healer.enable
+								return IsAnnounceDisabled() or not addon.db.profile.announce.healer.enable
 							end,
 							args = eventOptions,
 						},
@@ -364,6 +378,7 @@ local options = {
 					name = L["Damage"],
 					type = "group",
 					order = 30,
+					disabled = IsAnnounceDisabled,
 					get = function(info)
 						return addon.db.profile.announce.damager[info[#info]]
 					end,
@@ -390,7 +405,7 @@ local options = {
 							order = 20,
 							inline = true,
 							disabled = function()
-								return not addon.db.profile.announce.damager.enable
+								return IsAnnounceDisabled() or not addon.db.profile.announce.damager.enable
 							end,
 							args = eventOptions,
 						},
@@ -403,9 +418,6 @@ local options = {
 			desc = L["Manage alerts when listening for Loss Of Control events from other members of the group."],
 			type = "group",
 			order = 30,
-			disabled = function()
-				return not addon.db.profile.alert.enable
-			end,
 			get = function(info)
 				return addon.db.profile.alert[info[#info]]
 			end,
@@ -431,6 +443,7 @@ local options = {
 					desc = L["Enable showing alerts in the local chat window."],
 					type = "toggle",
 					order = 10,
+					disabled = IsAlertDisabled,
 					width = "full",
 				},
 				raidWarning = {
@@ -438,6 +451,7 @@ local options = {
 					desc = L["Enable showing alerts in the raid warning message area."],
 					type = "toggle",
 					order = 20,
+					disabled = IsAlertDisabled,
 					width = "full",
 				},
 				threshold = {
@@ -445,6 +459,7 @@ local options = {
 					desc = L["Only alert when other members are affected by a Loss Of Control event if the duration exceeds a minimum number of seconds."],
 					type = "range",
 					order = 25,
+					disabled = IsAlertDisabled,
 					min = 0,
 					max = 10,
 					step = 0.1,
@@ -454,6 +469,7 @@ local options = {
 					desc = L["Enable alerts when other members of the group regain control."],
 					type = "toggle",
 					order = 30,
+					disabled = IsAlertDisabled,
 					width = "full",
 				},
 				regainThreshold = {
@@ -461,12 +477,12 @@ local options = {
 					desc = L["Only alert when other members regain control if the duration of the Loss Of Control exceeds a minimum number of seconds."],
 					type = "range",
 					order = 40,
+					disabled = function()
+						return IsAlertDisabled() or not addon.db.profile.alert.regain
+					end,
 					min = 0,
 					max = 15,
 					step = 0.1,
-					disabled = function()
-						return not (addon.db.profile.alert.enable and addon.db.profile.alert.regain)
-					end,
 				},
 			},
 		},
