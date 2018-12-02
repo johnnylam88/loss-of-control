@@ -69,21 +69,21 @@ local defaultDB = {
 }
 
 local eventOptions = {
-	disarm = {
-		name = L["Disarm"],
-		desc = L["Disarmed of main-hand weapon."],
-		type = "toggle",
-		order = 10,
-	},
 	charm = {
 		name = L["Charm"],
 		desc = L["Charmed or seduced."],
 		type = "toggle",
-		order = 20,
+		order = 10,
 	},
 	confuse = {
 		name = L["Confuse"],
 		desc = L["Disoriented or confused."],
+		type = "toggle",
+		order = 20,
+	},
+	disarm = {
+		name = L["Disarm"],
+		desc = L["Disarmed of main-hand weapon."],
 		type = "toggle",
 		order = 30,
 	},
