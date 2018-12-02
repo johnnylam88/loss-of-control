@@ -28,7 +28,7 @@ local defaultDB = {
 			raidWarning = true, -- Announce as raid warning message.
 			threshold = 1.5, -- Only announce for events lasting longer than 1.5 seconds.
 			regain = false, -- Don't announce when player control is regained.
-			regainThreshold = 5, -- Only announce player regaining control after Loss Of Control lasting longer than 5 seconds.
+			regainThreshold = 1.5, -- Only announce player regaining control after Loss Of Control lasting longer than 1.5 seconds.
 			solo = false, -- No announcements if the player is not in a group.
 			tank = {
 				-- Default to enabling announcements for tanks for events that prevent all actions.
@@ -63,7 +63,7 @@ local defaultDB = {
 			raidWarning = true, -- Alert as raid warning message.
 			threshold = 1.5, -- Only alert for events lasting longer than 1.5 seconds.
 			regain = true, -- Alert for other group members regaining control.
-			regainThreshold = 5, -- Only announce members regaining control after Loss Of Control lasting longer than 5 seconds.
+			regainThreshold = 1.5, -- Only announce members regaining control after Loss Of Control lasting longer than 1.5 seconds.
 		}
 	},
 }
