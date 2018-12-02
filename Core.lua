@@ -77,6 +77,8 @@ local MooSpec = LibStub("MooSpec-1.0")
 local MooUnit = LibStub("MooUnit-1.0")
 local MooZone = LibStub("MooZone-1.0")
 
+local CHAT_COMMAND = "loc"
+
 function addon:OnInitialize()
 	local defaultDB = self:GetDefaultDB()
 	local options = self:GetOptions()
@@ -90,7 +92,7 @@ end
 
 function addon:OnEnable()
 	self:Debug(3, "OnEnable")
-	self:RegisterChatCommand("loc", "ChatCommand")
+	self:RegisterChatCommand(CHAT_COMMAND, "ChatCommand")
 	self:RegisterEvent("LOSS_OF_CONTROL_UPDATE", "UpdateLossOfControl")
 	self:RegisterEvent("UNIT_AURA", "OnUnitAura")
 	MooSpec.RegisterCallback(self, "MooSpec_UnitRoleChanged", "OnUnitRoleChanged")
@@ -100,7 +102,7 @@ end
 
 function addon:OnDisable()
 	self:Debug(3, "OnDisable")
-	self:UnregisterChatCommand("loc")
+	self:UnregisterChatCommand(CHAT_COMMAND)
 	self:UnregisterEvent("LOSS_OF_CONTROL_UPDATE")
 	self:UnregisterEvent("UNIT_AURA")
 	MooSpec.UnregisterCallback(self, "MooSpec_UnitRoleChanged")
@@ -169,6 +171,24 @@ function addon:ChatCommand(input)
 				self:Print("developer version")
 			else
 				self:Print(version)
+			end
+		elseif word == "announce" then
+			-- Toggle announce options.
+			local value = not self.db.profile.announce.enable
+			self.db.profile.announce.enable = value
+			if value then
+				self:Print(L["Announcements to the group are on."])
+			else
+				self:Print(L["Announcements to the group are off."])
+			end
+		elseif word == "alert" then
+			-- Toggle alert options.
+			local value = not self.db.profile.alert.enable
+			self.db.profile.alert.enable = value
+			if value then
+				self:Print(L["Alerts from the group are on."])
+			else
+				self:Print(L["Alerts from the group are off."])
 			end
 		elseif word == "debug" then
 			word = iterator()
