@@ -284,6 +284,7 @@ do
 		[ 22519] = { "STUN", L["Stunned"] }, -- Ice Nova
 		[ 22651] = { "STUN", L["Stunned"] }, -- Sacrifice
 		[ 48400] = { "STUN", L["Stunned"] }, -- Frost Tomb
+		[ 49735] = { "STUN", L["Stunned"] }, -- Terrifying Countenance
 		[ 74720] = { "CONFUSE", L["Disoriented"] }, -- Pound
 		[ 86780] = { "STUN", L["Stunned"] }, -- Shadow Prison
 		[149955] = { "STUN", L["Stunned"] }, -- Devouring Blackness
