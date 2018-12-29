@@ -283,6 +283,7 @@ do
 		[ 17307] = { "STUN", L["Stunned"] }, -- Knockout
 		[ 22519] = { "STUN", L["Stunned"] }, -- Ice Nova
 		[ 22651] = { "STUN", L["Stunned"] }, -- Sacrifice
+		[ 34661] = { "STUN", L["Stunned"] }, -- Sacrifice
 		[ 48400] = { "STUN", L["Stunned"] }, -- Frost Tomb
 		[ 49735] = { "STUN", L["Stunned"] }, -- Terrifying Countenance
 		[ 52086] = { "ROOT", L["Rooted"] }, -- Web Wrap
