@@ -291,6 +291,7 @@ do
 		[ 52087] = { "STUN", L["Stunned"] }, -- Web Wrap
 		[ 53472] = { "STUN", L["Stunned"] }, -- Pound
 		[ 55959] = { "STUN", L["Stunned"] }, -- Embrace of the Vampyr
+		[ 58526] = { "PACIFY", L["Pacified"] }, -- Azure Bindings
 		[ 59433] = { "STUN", L["Stunned"] }, -- Pound (Heroic)
 		[ 59513] = { "STUN", L["Stunned"] }, -- Embrace of the Vampyr (Heroic)
 		[ 74720] = { "CONFUSE", L["Disoriented"] }, -- Pound
