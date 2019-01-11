@@ -296,6 +296,7 @@ do
 		[ 59513] = { "STUN", L["Stunned"] }, -- Embrace of the Vampyr (Heroic)
 		[ 74720] = { "CONFUSE", L["Disoriented"] }, -- Pound
 		[ 86780] = { "STUN", L["Stunned"] }, -- Shadow Prison
+		[120160] = { "CONFUSE", L["Disoriented"] }, -- Conflagrate
 		[149955] = { "STUN", L["Stunned"] }, -- Devouring Blackness
 		[150485] = { "ROOT", L["Rooted"] }, -- Web Wrap
 		[150486] = { "STUN", L["Stunned"] }, -- Web Wrap
