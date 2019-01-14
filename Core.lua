@@ -301,6 +301,10 @@ do
 		[150485] = { "ROOT", L["Rooted"] }, -- Web Wrap
 		[150486] = { "STUN", L["Stunned"] }, -- Web Wrap
 		[150634] = { "STUN", L["Stunned"] }, -- Leviathan's Grip
+		[178077] = { "STUN", L["Stunned"] }, -- Frost Prison
+		[179056] = { "PACIFY", L["Invulnerable"] }, -- Frost Prison
+		[209393] = { "STUN", L["Stunned"] }, -- Sigil of Binding
+		[214298] = { "STUN", L["Stunned"] }, -- Demonic Bindings
 	}
 
 	function addon:IsWatchedEvent(locType, spellID)
