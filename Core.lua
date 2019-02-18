@@ -295,6 +295,7 @@ do
 		[ 59433] = { "STUN", L["Stunned"] }, -- Pound (Heroic)
 		[ 59513] = { "STUN", L["Stunned"] }, -- Embrace of the Vampyr (Heroic)
 		[ 74720] = { "CONFUSE", L["Disoriented"] }, -- Pound
+		[ 76312] = { "STUN", L["Stunned"] }, -- Earthsmash
 		[ 86780] = { "STUN", L["Stunned"] }, -- Shadow Prison
 		[120160] = { "CONFUSE", L["Disoriented"] }, -- Conflagrate
 		[149955] = { "STUN", L["Stunned"] }, -- Devouring Blackness
@@ -303,8 +304,21 @@ do
 		[150634] = { "STUN", L["Stunned"] }, -- Leviathan's Grip
 		[178077] = { "STUN", L["Stunned"] }, -- Frost Prison
 		[179056] = { "PACIFY", L["Invulnerable"] }, -- Frost Prison
+		[202310] = { "STUN", L["Stunned"] }, -- Hyper Zap-o-matic Ultimate Mark III
+		[206413] = { "STUN", L["Stunned"] }, -- Shriek of the Tidemistress
 		[209393] = { "STUN", L["Stunned"] }, -- Sigil of Binding
 		[214298] = { "STUN", L["Stunned"] }, -- Demonic Bindings
+		[223322] = { "STUN", L["Stunned"] }, -- Absorbing Essence
+		[223451] = { "STUN", L["Stunned"] }, -- Absorbing Essence
+		[227072] = { "STUN", L["Stunned"] }, -- Fel Domination
+		[228290] = { "ROOT", L["Rooted"] }, -- Personal Egg
+		[234263] = { "STUN", L["Stunned"] }, -- Unconscious
+		[234679] = { "STUN", L["Stunned"] }, -- Acquire the Gift
+		[235784] = { "STUN", L["Stunned"] }, -- Grasping Fel
+		[238619] = { "PACIFY", L["Pacified"] }, -- Piercing Screech
+		[241273] = { "CONFUSE", L["Disoriented"] }, -- Piercing Screech
+		[251971] = { "STUN", L["Stunned"] }, -- Abyssal Smash
+		-- Collossal Strike
 	}
 
 	function addon:IsWatchedEvent(locType, spellID)
